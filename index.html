@@ -13,10 +13,10 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 flex flex-col justify-between min-h-screen font-sans overflow-x-hidden">
+<body class="bg-slate-50 text-slate-800 flex flex-col justify-between min-h-screen font-sans overflow-x-hidden pt-[65px]">
 
-    <header id="mainHeader" class="bg-white shadow-md border-b border-slate-100 py-3 px-4 sticky top-0 z-50">
-        <div class="max-w-md mx-auto flex items-center justify-between">
+    <header id="mainHeader" class="bg-white shadow-md border-b border-slate-100 py-3 px-4 fixed top-0 left-0 right-0 h-[65px] z-[100]">
+        <div class="max-w-md mx-auto flex items-center justify-between h-full">
             <div class="flex items-center space-x-2">
                 <button id="backBtn" onclick="backToMenu()" class="hidden mr-2 p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl transition">
                     <i class="fa-solid fa-arrow-left"></i>
@@ -26,7 +26,7 @@
                 </div>
                 <div>
                     <h1 class="text-sm font-bold tracking-tight">TRDC 訂餐工具</h1>
-                    <p class="text-[10px] text-slate-400">網頁快捷版 v3.6</p>
+                    <p class="text-[10px] text-slate-400">網頁快捷版 v3.8</p>
                 </div>
             </div>
             
@@ -39,7 +39,7 @@
         </div>
     </header>
 
-    <main id="mainMenu" class="flex-grow flex items-center justify-center px-6 py-8">
+    <main id="mainMenu" class="flex-grow flex items-center justify-center px-6 py-4">
         <div class="w-full max-w-md space-y-4">
             
             <button onclick="openMenu()" class="w-full flex items-center justify-between p-5 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-blue-300 active:scale-98 transition duration-150 text-left">
@@ -88,12 +88,12 @@
         <iframe id="targetIframe" src="" class="w-full h-full border-none flex-grow" style="height: calc(100vh - 65px);"></iframe>
     </div>
 
-    <footer id="mainFooter" class="py-6 text-center text-xs text-slate-400">
+    <footer id="mainFooter" class="py-4 text-center text-xs text-slate-400">
         <p>請依規定的工作日天數選擇正確的日期</p>
     </footer>
 
-    <div id="menuModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden justify-center items-end sm:items-center p-4 transition-all duration-300 opacity-0">
-        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden transform translate-y-full sm:translate-y-0 transition-transform duration-300 flex flex-col max-h-[85vh]">
+    <div id="menuModal" class="fixed inset-x-0 bottom-0 top-[65px] bg-slate-900/60 backdrop-blur-sm z-[90] hidden justify-center items-end sm:items-center p-4 transition-all duration-300 opacity-0">
+        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden transform translate-y-full sm:translate-y-0 transition-transform duration-300 flex flex-col max-h-[80vh]">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <h3 class="font-bold text-slate-800 text-lg flex items-center">
                     <i class="fa-solid fa-image text-amber-500 mr-2"></i>本周菜單
@@ -102,14 +102,14 @@
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
-            <div class="flex-grow overflow-y-auto p-4 flex flex-col justify-center items-center bg-slate-100 min-h-[300px] relative">
+            <div class="flex-grow overflow-y-auto p-4 flex flex-col justify-center items-center bg-slate-100 min-h-[250px] relative">
                 <div id="imageLoader" class="absolute inset-0 flex flex-col justify-center items-center bg-slate-100 space-y-2 z-10">
                     <i class="fa-solid fa-circle-notch fa-spin text-3xl text-blue-500"></i>
                     <p class="text-xs text-slate-500">菜單圖片載入中...</p>
                 </div>
                 <img id="menuImage" src="https://drive.google.com/thumbnail?sz=w1000&id=1BVJimgGuLN1J5GYFeayJQOg-0fj816Ku" 
                      alt="TRDC 菜單" 
-                     class="max-w-full max-h-[50vh] object-contain rounded-lg shadow-sm z-20 transition-opacity duration-300"
+                     class="max-w-full max-h-[45vh] object-contain rounded-lg shadow-sm z-20 transition-opacity duration-300"
                      onload="handleImageLoaded()">
             </div>
             <div class="p-5 border-t border-slate-100 bg-white flex space-x-3">
@@ -123,7 +123,7 @@
         </div>
     </div>
 
-    <div id="orderModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden justify-center items-end sm:items-center p-4 transition-all duration-300 opacity-0">
+    <div id="orderModal" class="fixed inset-x-0 bottom-0 top-[65px] bg-slate-900/60 backdrop-blur-sm z-[90] hidden justify-center items-end sm:items-center p-4 transition-all duration-300 opacity-0">
         <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden transform translate-y-full sm:translate-y-0 transition-transform duration-300 flex flex-col">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <h3 class="font-bold text-slate-800 text-lg flex items-center">
@@ -139,7 +139,7 @@
                     <input type="date" id="modalDateInput" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-base font-medium text-slate-800">
                 </div>
                 <p class="text-xs text-slate-400 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                    💡 提示：點擊下方按鈕後，iService 將在下方展開，**頂部的即時時鐘會持續留存幫您倒數**！
+                    💡 提示：點擊確認後，iService 系統會在下方展開，**最上方的即時時鐘依然會全程留存**！
                 </p>
             </div>
             <div class="p-5 border-t border-slate-100 bg-slate-50 flex space-x-3">
@@ -187,7 +187,7 @@
             modalDateInput.value = today;
         });
 
-        // --- 1. 子母畫面切換核心（讓時鐘不消失的關鍵） ---
+        // --- 1. 子母畫面切換核心（確保時鐘完全獨立不被影響） ---
         function loadIframe(url) {
             mainMenu.classList.add('hidden');
             mainFooter.classList.add('hidden');
@@ -199,7 +199,7 @@
         function backToMenu() {
             iframeContainer.classList.add('hidden');
             backBtn.classList.add('hidden');
-            targetIframe.src = ""; // 清空，釋放記憶體
+            targetIframe.src = ""; 
             mainMenu.classList.remove('hidden');
             mainFooter.classList.remove('hidden');
         }
@@ -219,8 +219,8 @@
             menuImage.classList.remove('opacity-0');
         }
 
+        // 修正上一版的小語法瑕疵
         function closeMenu(goToOrder = false) {
-            menuModal.classList.opacity-100;
             menuModal.classList.remove('opacity-100');
             menuModalContent.classList.add('translate-y-full');
             setTimeout(() => {

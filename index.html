@@ -34,7 +34,7 @@
                 </div>
                 <div>
                     <h1 class="text-lg font-bold tracking-tight">TRDC 訂餐工具</h1>
-                    <p class="text-xs text-slate-400">網頁快捷版 v2.7</p>
+                    <p class="text-xs text-slate-400">網頁快捷版 v2.8</p>
                 </div>
             </div>
             <span class="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">大溪廠</span>
@@ -59,12 +59,12 @@
                 <i class="fa-solid fa-chevron-right text-slate-400"></i>
             </button>
 
-            <!-- 按鈕 2：直接訂餐 (重構：將整個容器包裝，並把隱形日期輸入框疊在最上層，保證 100% 可點擊喚起) -->
+            <!-- 按鈕 2：直接訂餐 (使用雙重防呆監聽事件) -->
             <div class="relative w-full flex items-center justify-between p-5 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-blue-300 active:scale-98 transition duration-150 text-left">
                 <!-- 真正的日期輸入框，隱形但鋪滿整個按鈕 -->
-                <input type="date" class="custom-date-input" onchange="handleDateSelected(this.value)">
+                <input type="date" class="custom-date-input" oninput="handleDateInput(this.value)" onchange="handleDateChange(this.value)">
                 
-                <!-- 按鈕的外觀展示 (使用者看得到的畫面) -->
+                <!-- 按鈕的外觀展示 -->
                 <div class="flex items-center space-x-4 pointer-events-none">
                     <div class="bg-emerald-100 text-emerald-600 p-3 rounded-xl">
                         <i class="fa-solid fa-calendar-check text-xl"></i>
@@ -132,7 +132,6 @@
                 <button onclick="closeMenu(false)" class="flex-1 py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-xl transition">
                     關閉
                 </button>
-                <!-- 菜單內的「去訂餐」按鈕，因為 Safari 安全機制，改為關閉視窗後提示使用者點擊主畫面按鈕 -->
                 <button onclick="closeMenu(true)" class="flex-1 py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition shadow-lg shadow-blue-200">
                     去訂餐 🤤
                 </button>
@@ -146,6 +145,8 @@
         const modalContent = menuModal.querySelector('.transform');
         const menuImage = document.getElementById('menuImage');
         const imageLoader = document.getElementById('imageLoader');
+
+        let tempSelectedDate = ''; // 用來儲存暫時選取的日期
 
         // 1. 開啟菜單彈窗
         function openMenu() {
@@ -171,17 +172,36 @@
                 menuModal.classList.add('hidden');
                 menuModal.classList.remove('flex');
                 if (goToOrder) {
-                    // 提示使用者直接點擊主畫面的第二個按鈕
                     alert('請直接點擊主畫面的「2. 直接訂餐」來選擇日期喔！');
                 }
             }, 300);
         }
 
-        // 日期選擇完成後，組合網址並跳轉
-        function handleDateSelected(selectedDate) {
-            if (!selectedDate) return;
-            const targetUrl = `https://app.inventec.com/iServicePWA/OrderDailyMeals.html?dt=${selectedDate}&site=TRDC`;
-            window.location.href = targetUrl;
+        // 2. 日期選擇防呆機制
+        // 當使用者在滾輪上滑動變更日期時，先記錄下來，但不直接跳轉
+        function handleDateInput(val) {
+            tempSelectedDate = val;
+        }
+
+        // 當使用者按了「完成/確認/✓」關閉滾輪時，觸發此函數
+        function handleDateChange(val) {
+            const finalDate = val || tempSelectedDate;
+            if (!finalDate) return;
+
+            // 重置暫存值，避免干擾下一次選擇
+            tempSelectedDate = '';
+            
+            // 跳出二次確認視窗，避免 iOS 剛開啟滾輪時自動帶入今天就跑掉
+            const isConfirmed = confirm(`您選擇的訂餐日期是：${finalDate}\n確定要前往訂餐嗎？`);
+            
+            if (isConfirmed) {
+                const targetUrl = `https://app.inventec.com/iServicePWA/OrderDailyMeals.html?dt=${finalDate}&site=TRDC`;
+                window.location.href = targetUrl;
+            } else {
+                // 如果取消，清空 input 的值，讓使用者下次可以重新點選
+                const dateInputs = document.querySelectorAll('.custom-date-input');
+                dateInputs.forEach(input => input.value = '');
+            }
         }
 
         // 3. 看訂餐結果 & QRCode

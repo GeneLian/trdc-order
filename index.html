@@ -10,6 +10,17 @@
     <style>
         /* 避免手機瀏覽器雙擊縮放的延遲 */
         touch-action: manipulation;
+        
+        /* 隱藏原生日期選擇器的預設樣式，只保留點擊功能 */
+        .custom-date-input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            -webkit-appearance: none;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 flex flex-col justify-between min-h-screen font-sans">
@@ -23,7 +34,7 @@
                 </div>
                 <div>
                     <h1 class="text-lg font-bold tracking-tight">TRDC 訂餐工具</h1>
-                    <p class="text-xs text-slate-400">網頁快捷版 v2.5</p>
+                    <p class="text-xs text-slate-400">網頁快捷版 v2.7</p>
                 </div>
             </div>
             <span class="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">大溪廠</span>
@@ -42,15 +53,19 @@
                     </div>
                     <div>
                         <h3 class="font-bold text-slate-800">1. 看一下菜單 🤔</h3>
-                        <p class="text-sm text-slate-500">查看今日最新菜單圖片</p>
+                        <p class="text-sm text-slate-500">查看本周最新菜單圖片</p>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-right text-slate-400"></i>
             </button>
 
-            <!-- 按鈕 2：直接訂餐 -->
-            <button onclick="triggerDatePicker()" class="w-full flex items-center justify-between p-5 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-blue-300 active:scale-98 transition duration-150 text-left">
-                <div class="flex items-center space-x-4">
+            <!-- 按鈕 2：直接訂餐 (重構：將整個容器包裝，並把隱形日期輸入框疊在最上層，保證 100% 可點擊喚起) -->
+            <div class="relative w-full flex items-center justify-between p-5 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-blue-300 active:scale-98 transition duration-150 text-left">
+                <!-- 真正的日期輸入框，隱形但鋪滿整個按鈕 -->
+                <input type="date" class="custom-date-input" onchange="handleDateSelected(this.value)">
+                
+                <!-- 按鈕的外觀展示 (使用者看得到的畫面) -->
+                <div class="flex items-center space-x-4 pointer-events-none">
                     <div class="bg-emerald-100 text-emerald-600 p-3 rounded-xl">
                         <i class="fa-solid fa-calendar-check text-xl"></i>
                     </div>
@@ -59,8 +74,8 @@
                         <p class="text-sm text-slate-500">請手動選擇您的訂餐日期</p>
                     </div>
                 </div>
-                <i class="fa-solid fa-chevron-right text-slate-400"></i>
-            </button>
+                <i class="fa-solid fa-chevron-right text-slate-400 pointer-events-none"></i>
+            </div>
 
             <!-- 按鈕 3：看訂餐結果 -->
             <button onclick="goToResult()" class="w-full flex items-center justify-between p-5 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-blue-300 active:scale-98 transition duration-150 text-left">
@@ -75,9 +90,6 @@
                 </div>
                 <i class="fa-solid fa-chevron-right text-slate-400"></i>
             </button>
-
-            <!-- 隱藏的日期選擇器 -->
-            <input type="date" id="hiddenDatePicker" class="hidden" onchange="handleDateSelected(this.value)">
 
         </div>
     </main>
@@ -94,7 +106,7 @@
             <!-- 彈窗頭部 -->
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <h3 class="font-bold text-slate-800 text-lg flex items-center">
-                    <i class="fa-solid fa-image text-amber-500 mr-2"></i>今日菜單
+                    <i class="fa-solid fa-image text-amber-500 mr-2"></i>本周菜單
                 </h3>
                 <button onclick="closeMenu(false)" class="text-slate-400 hover:text-slate-600 p-1">
                     <i class="fa-solid fa-xmark text-xl"></i>
@@ -108,7 +120,7 @@
                     <i class="fa-solid fa-circle-notch fa-spin text-3xl text-blue-500"></i>
                     <p class="text-xs text-slate-500">菜單圖片載入中...</p>
                 </div>
-                <!-- 菜單圖片（改用相容性極佳的 thumbnail 格式網址） -->
+                <!-- 菜單圖片 -->
                 <img id="menuImage" src="https://drive.google.com/thumbnail?sz=w1000&id=1BVJimgGuLN1J5GYFeayJQOg-0fj816Ku" 
                      alt="TRDC 菜單" 
                      class="max-w-full max-h-[50vh] object-contain rounded-lg shadow-sm z-20 transition-opacity duration-300"
@@ -120,6 +132,7 @@
                 <button onclick="closeMenu(false)" class="flex-1 py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-xl transition">
                     關閉
                 </button>
+                <!-- 菜單內的「去訂餐」按鈕，因為 Safari 安全機制，改為關閉視窗後提示使用者點擊主畫面按鈕 -->
                 <button onclick="closeMenu(true)" class="flex-1 py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition shadow-lg shadow-blue-200">
                     去訂餐 🤤
                 </button>
@@ -158,16 +171,10 @@
                 menuModal.classList.add('hidden');
                 menuModal.classList.remove('flex');
                 if (goToOrder) {
-                    setTimeout(triggerDatePicker, 200);
+                    // 提示使用者直接點擊主畫面的第二個按鈕
+                    alert('請直接點擊主畫面的「2. 直接訂餐」來選擇日期喔！');
                 }
             }, 300);
-        }
-
-        // 2. 觸發隱藏的日期選擇器
-        function triggerDatePicker() {
-            const datePicker = document.getElementById('hiddenDatePicker');
-            datePicker.value = ''; 
-            datePicker.showPicker(); 
         }
 
         // 日期選擇完成後，組合網址並跳轉

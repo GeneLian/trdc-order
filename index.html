@@ -26,13 +26,12 @@
                 </div>
                 <div>
                     <h1 class="text-sm font-bold tracking-tight">TRDC 訂餐工具</h1>
-                    <p class="text-[10px] text-slate-400">搶餐必勝版 v3.5</p>
+                    <p class="text-[10px] text-slate-400">網頁快捷版 v3.6</p>
                 </div>
             </div>
             
-            <div class="text-right flex items-center space-x-2">
-                <span class="inline-flex items-center rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-medium text-red-600 ring-1 ring-inset ring-red-600/20">搶餐倒數</span>
-                <div id="liveClock" class="font-mono text-base font-black bg-slate-900 text-green-400 px-2.5 py-1 rounded-lg border border-slate-800 shadow-xl flex items-center space-x-1 tracking-wider animate-pulse">
+            <div class="text-right flex items-center">
+                <div id="liveClock" class="font-mono text-base font-black bg-slate-900 text-green-400 px-2.5 py-1 rounded-lg border border-slate-800 shadow-xl flex items-center space-x-1 tracking-wider">
                     <i class="fa-regular fa-clock text-xs text-red-500"></i>
                     <span>00:00:00</span>
                 </div>
@@ -140,7 +139,7 @@
                     <input type="date" id="modalDateInput" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-base font-medium text-slate-800">
                 </div>
                 <p class="text-xs text-slate-400 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                    💡 提示：點擊下方按鈕後，iService 將在下方展開，**頂部的秒針時鐘會持續留存幫您倒數搶餐**！
+                    💡 提示：點擊下方按鈕後，iService 將在下方展開，**頂部的即時時鐘會持續留存幫您倒數**！
                 </p>
             </div>
             <div class="p-5 border-t border-slate-100 bg-slate-50 flex space-x-3">
@@ -190,24 +189,17 @@
 
         // --- 1. 子母畫面切換核心（讓時鐘不消失的關鍵） ---
         function loadIframe(url) {
-            // 隱藏主選單與頁尾
             mainMenu.classList.add('hidden');
             mainFooter.classList.add('hidden');
-            
-            // 顯示返回按鈕與 Iframe 容器
             backBtn.classList.remove('hidden');
             iframeContainer.classList.remove('hidden');
-            
-            // 載入目標網址
             targetIframe.src = url;
         }
 
         function backToMenu() {
-            // 回到工具首頁
             iframeContainer.classList.add('hidden');
             backBtn.classList.add('hidden');
             targetIframe.src = ""; // 清空，釋放記憶體
-            
             mainMenu.classList.remove('hidden');
             mainFooter.classList.remove('hidden');
         }
@@ -228,6 +220,7 @@
         }
 
         function closeMenu(goToOrder = false) {
+            menuModal.classList.opacity-100;
             menuModal.classList.remove('opacity-100');
             menuModalContent.classList.add('translate-y-full');
             setTimeout(() => {
@@ -264,11 +257,7 @@
             }
             
             const targetUrl = `https://app.inventec.com/iServicePWA/OrderDailyMeals.html?dt=${selectedDate}&site=TRDC`;
-            
-            // 關閉選擇日期的彈窗
             closeOrderModal();
-            
-            // 重要：不跳頁，而是直接在下方子畫面載入！
             loadIframe(targetUrl);
         }
     </script>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TRDC 訂餐工具</title>
+    <!-- 引入 Tailwind CSS 讓介面變美觀 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 避免手機瀏覽器雙擊縮放的延遲 */
+        touch-action: manipulation;
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col justify-between min-h-screen font-sans">
+
+    <!-- 頂部標題列 -->
+    <header class="bg-white shadow-sm border-b border-slate-100 py-5 px-6 sticky top-0 z-10">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-500 text-white p-2 rounded-xl shadow-md shadow-blue-200">
+                    <i class="fa-solid fa-utensils text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight">TRDC 訂餐工具</h1>
+                    <p class="text-xs text-slate-400">網頁快捷版 v2.3</p>
+                </div>
+            </div>
+            <span class="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">大溪廠</span>
+        </div>
+    </header>
+
+    <!-- 主內容區 -->
+    <main class="flex-grow flex items-center justify-center px-6 py-8">
+        <div class="w-full max-w-md space-y-4">
+            
+            <!-- 按鈕 1：看一下菜單 -->
+            <button onclick="openMenu()" class="w-full flex items-center justify-between p-5 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-blue-300 active:scale-98 transition duration-150 text-left">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-amber-100 text-amber-600 p-3 rounded-xl">
+                        <i class="fa-solid fa-map-marked-alt text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800">1. 看一下菜單 🤔</h3>
+                        <p class="text-sm text-slate-500">查看今日最新菜單圖片</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-slate-400"></i>
+            </button>
+
+            <!-- 按鈕 2：直接訂餐 -->
+            <button onclick="triggerDatePicker()" class="w-full flex items-center justify-between p-5 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-blue-300 active:scale-98 transition duration-150 text-left">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-emerald-100 text-emerald-600 p-3 rounded-xl">
+                        <i class="fa-solid fa-calendar-check text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800">2. 直接訂餐 🤤</h3>
+                        <p class="text-sm text-slate-500">請手動選擇您的訂餐日期</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-slate-400"></i>
+            </button>
+
+            <!-- 按鈕 3：看訂餐結果 -->
+            <button onclick="goToResult()" class="w-full flex items-center justify-between p-5 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-blue-300 active:scale-98 transition duration-150 text-left">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-blue-100 text-blue-600 p-3 rounded-xl">
+                        <i class="fa-solid fa-qrcode text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800">3. 看訂餐結果 & QRCode</h3>
+                        <p class="text-sm text-slate-500">查詢紀錄並出示取餐碼</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-slate-400"></i>
+            </button>
+
+            <!-- 隱藏的日期選擇器 -->
+            <input type="date" id="hiddenDatePicker" class="hidden" onchange="handleDateSelected(this.value)">
+
+        </div>
+    </main>
+
+    <!-- 底部資訊 -->
+    <footer class="py-6 text-center text-xs text-slate-400">
+        <p>請依規定的工作日天數選擇正確的日期</p>
+    </footer>
+
+    <!-- 彈出視窗 1：菜單 Modal -->
+    <div id="menuModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden justify-center items-end sm:items-center p-4 transition-all duration-300 opacity-0">
+        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden transform translate-y-full sm:translate-y-0 transition-transform duration-300 flex flex-col max-h-[85vh]">
+            
+            <!-- 彈窗頭部 -->
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-slate-800 text-lg flex items-center">
+                    <i class="fa-solid fa-image text-amber-500 mr-2"></i>今日菜單
+                </h3>
+                <button onclick="closeMenu(false)" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- 彈窗內容：顯示 Google Drive 圖片 -->
+            <div class="flex-grow overflow-y-auto p-4 flex justify-center items-center bg-slate-100 min-h-[300px]">
+                <img src="https://drive.google.com/uc?export=view&id=1BVJimgGuLN1J5GYFeayJQOg-0fj816Ku" 
+                     alt="TRDC 菜單" 
+                     class="max-w-full max-h-[50vh] object-contain rounded-lg shadow-sm"
+                     onerror="this.onerror=null; this.src='https://placehold.co/600x400?text=菜單載入中或需要權限';">
+            </div>
+
+            <!-- 彈窗腳部按鈕 -->
+            <div class="p-5 border-t border-slate-100 bg-white flex space-x-3">
+                <button onclick="closeMenu(false)" class="flex-1 py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-xl transition">
+                    關閉
+                </button>
+                <button onclick="closeMenu(true)" class="flex-1 py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition shadow-lg shadow-blue-200">
+                    去訂餐 🤤
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript 邏輯控制 -->
+    <script>
+        const menuModal = document.getElementById('menuModal');
+        const modalContent = menuModal.querySelector('.transform');
+
+        // 1. 開啟菜單彈窗
+        function openMenu() {
+            menuModal.classList.remove('hidden');
+            menuModal.classList.add('flex');
+            setTimeout(() => {
+                menuModal.classList.add('opacity-100');
+                modalContent.classList.remove('translate-y-full');
+            }, 10);
+        }
+
+        // 關閉菜單彈窗
+        function closeMenu(goToOrder = false) {
+            menuModal.classList.remove('opacity-100');
+            modalContent.classList.add('translate-y-full');
+            setTimeout(() => {
+                menuModal.classList.add('hidden');
+                menuModal.classList.remove('flex');
+                if (goToOrder) {
+                    setTimeout(triggerDatePicker, 200);
+                }
+            }, 300);
+        }
+
+        // 2. 觸發隱藏的日期選擇器（不給予任何預設值）
+        function triggerDatePicker() {
+            const datePicker = document.getElementById('hiddenDatePicker');
+            
+            // 移除預設日期，保持空白，強制使用者開啟時必須手動點選
+            datePicker.value = ''; 
+            
+            // 呼叫原生日期選擇器
+            datePicker.showPicker(); 
+        }
+
+        // 日期選擇完成後，組合網址並跳轉
+        function handleDateSelected(selectedDate) {
+            if (!selectedDate) return;
+            // 組合你的英業達訂餐網址
+            const targetUrl = `https://app.inventec.com/iServicePWA/OrderDailyMeals.html?dt=${selectedDate}&site=TRDC`;
+            window.location.href = targetUrl;
+        }
+
+        // 3. 看訂餐結果 & QRCode
+        function goToResult() {
+            window.location.href = 'https://app.inventec.com/iServicePWA/DaxiOrderMeal.html?rid=A0001';
+        }
+    </script>
+</body>
+</html>

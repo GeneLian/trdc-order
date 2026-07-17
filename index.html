@@ -23,7 +23,7 @@
                 </div>
                 <div>
                     <h1 class="text-lg font-bold tracking-tight">TRDC 訂餐工具</h1>
-                    <p class="text-xs text-slate-400">網頁快捷版 v2.3</p>
+                    <p class="text-xs text-slate-400">網頁快捷版 v2.5</p>
                 </div>
             </div>
             <span class="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">大溪廠</span>
@@ -87,7 +87,7 @@
         <p>請依規定的工作日天數選擇正確的日期</p>
     </footer>
 
-    <!-- 彈出視窗 1：菜單 Modal -->
+    <!-- 彈出視窗：菜單 Modal -->
     <div id="menuModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden justify-center items-end sm:items-center p-4 transition-all duration-300 opacity-0">
         <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden transform translate-y-full sm:translate-y-0 transition-transform duration-300 flex flex-col max-h-[85vh]">
             
@@ -101,12 +101,18 @@
                 </button>
             </div>
 
-            <!-- 彈窗內容：顯示 Google Drive 圖片 -->
-            <div class="flex-grow overflow-y-auto p-4 flex justify-center items-center bg-slate-100 min-h-[300px]">
-                <img src="https://drive.google.com/uc?export=view&id=1BVJimgGuLN1J5GYFeayJQOg-0fj816Ku" 
+            <!-- 彈窗內容 -->
+            <div class="flex-grow overflow-y-auto p-4 flex flex-col justify-center items-center bg-slate-100 min-h-[300px] relative">
+                <!-- 載入中動畫 -->
+                <div id="imageLoader" class="absolute inset-0 flex flex-col justify-center items-center bg-slate-100 space-y-2 z-10">
+                    <i class="fa-solid fa-circle-notch fa-spin text-3xl text-blue-500"></i>
+                    <p class="text-xs text-slate-500">菜單圖片載入中...</p>
+                </div>
+                <!-- 菜單圖片（改用相容性極佳的 thumbnail 格式網址） -->
+                <img id="menuImage" src="https://drive.google.com/thumbnail?sz=w1000&id=1BVJimgGuLN1J5GYFeayJQOg-0fj816Ku" 
                      alt="TRDC 菜單" 
-                     class="max-w-full max-h-[50vh] object-contain rounded-lg shadow-sm"
-                     onerror="this.onerror=null; this.src='https://placehold.co/600x400?text=菜單載入中或需要權限';">
+                     class="max-w-full max-h-[50vh] object-contain rounded-lg shadow-sm z-20 transition-opacity duration-300"
+                     onload="handleImageLoaded()">
             </div>
 
             <!-- 彈窗腳部按鈕 -->
@@ -125,6 +131,8 @@
     <script>
         const menuModal = document.getElementById('menuModal');
         const modalContent = menuModal.querySelector('.transform');
+        const menuImage = document.getElementById('menuImage');
+        const imageLoader = document.getElementById('imageLoader');
 
         // 1. 開啟菜單彈窗
         function openMenu() {
@@ -134,6 +142,12 @@
                 menuModal.classList.add('opacity-100');
                 modalContent.classList.remove('translate-y-full');
             }, 10);
+        }
+
+        // 圖片載入成功的處理
+        function handleImageLoaded() {
+            imageLoader.classList.add('hidden');
+            menuImage.classList.remove('opacity-0');
         }
 
         // 關閉菜單彈窗
@@ -149,21 +163,16 @@
             }, 300);
         }
 
-        // 2. 觸發隱藏的日期選擇器（不給予任何預設值）
+        // 2. 觸發隱藏的日期選擇器
         function triggerDatePicker() {
             const datePicker = document.getElementById('hiddenDatePicker');
-            
-            // 移除預設日期，保持空白，強制使用者開啟時必須手動點選
             datePicker.value = ''; 
-            
-            // 呼叫原生日期選擇器
             datePicker.showPicker(); 
         }
 
         // 日期選擇完成後，組合網址並跳轉
         function handleDateSelected(selectedDate) {
             if (!selectedDate) return;
-            // 組合你的英業達訂餐網址
             const targetUrl = `https://app.inventec.com/iServicePWA/OrderDailyMeals.html?dt=${selectedDate}&site=TRDC`;
             window.location.href = targetUrl;
         }

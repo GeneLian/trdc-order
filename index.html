@@ -7,35 +7,40 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* 避免手機瀏覽器雙擊縮放的延遲 */
         touch-action: manipulation;
+        /* 隱藏滾動條但保持功能 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 flex flex-col justify-between min-h-screen font-sans">
+<body class="bg-slate-50 text-slate-800 flex flex-col justify-between min-h-screen font-sans overflow-x-hidden">
 
-    <header class="bg-white shadow-sm border-b border-slate-100 py-4 px-6 sticky top-0 z-10">
+    <header id="mainHeader" class="bg-white shadow-md border-b border-slate-100 py-3 px-4 sticky top-0 z-50">
         <div class="max-w-md mx-auto flex items-center justify-between">
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-2">
+                <button id="backBtn" onclick="backToMenu()" class="hidden mr-2 p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl transition">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
                 <div class="bg-blue-500 text-white p-2 rounded-xl shadow-md shadow-blue-200">
-                    <i class="fa-solid fa-utensils text-lg"></i>
+                    <i class="fa-solid fa-utensils text-sm"></i>
                 </div>
                 <div>
-                    <h1 class="text-lg font-bold tracking-tight">TRDC 訂餐工具</h1>
-                    <p class="text-xs text-slate-400">網頁快捷版 v3.0</p>
+                    <h1 class="text-sm font-bold tracking-tight">TRDC 訂餐工具</h1>
+                    <p class="text-[10px] text-slate-400">搶餐必勝版 v3.5</p>
                 </div>
             </div>
             
-            <div class="text-right flex flex-col items-end">
-                <span class="inline-flex items-center rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20 mb-1">大溪廠</span>
-                <div id="liveClock" class="font-mono text-sm font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 shadow-inner flex items-center space-x-1">
-                    <i class="fa-regular fa-clock text-blue-500 animate-pulse text-xs"></i>
+            <div class="text-right flex items-center space-x-2">
+                <span class="inline-flex items-center rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-medium text-red-600 ring-1 ring-inset ring-red-600/20">搶餐倒數</span>
+                <div id="liveClock" class="font-mono text-base font-black bg-slate-900 text-green-400 px-2.5 py-1 rounded-lg border border-slate-800 shadow-xl flex items-center space-x-1 tracking-wider animate-pulse">
+                    <i class="fa-regular fa-clock text-xs text-red-500"></i>
                     <span>00:00:00</span>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="flex-grow flex items-center justify-center px-6 py-8">
+    <main id="mainMenu" class="flex-grow flex items-center justify-center px-6 py-8">
         <div class="w-full max-w-md space-y-4">
             
             <button onclick="openMenu()" class="w-full flex items-center justify-between p-5 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-blue-300 active:scale-98 transition duration-150 text-left">
@@ -64,7 +69,7 @@
                 <i class="fa-solid fa-chevron-right text-slate-400"></i>
             </button>
 
-            <button onclick="goToResult()" class="w-full flex items-center justify-between p-5 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-blue-300 active:scale-98 transition duration-150 text-left">
+            <button onclick="loadIframe('https://app.inventec.com/iServicePWA/DaxiOrderMeal.html?rid=A0001')" class="w-full flex items-center justify-between p-5 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-blue-300 active:scale-98 transition duration-150 text-left">
                 <div class="flex items-center space-x-4">
                     <div class="bg-blue-100 text-blue-600 p-3 rounded-xl">
                         <i class="fa-solid fa-qrcode text-xl"></i>
@@ -80,7 +85,11 @@
         </div>
     </main>
 
-    <footer class="py-6 text-center text-xs text-slate-400">
+    <div id="iframeContainer" class="w-full flex-grow hidden bg-white">
+        <iframe id="targetIframe" src="" class="w-full h-full border-none flex-grow" style="height: calc(100vh - 65px);"></iframe>
+    </div>
+
+    <footer id="mainFooter" class="py-6 text-center text-xs text-slate-400">
         <p>請依規定的工作日天數選擇正確的日期</p>
     </footer>
 
@@ -115,31 +124,25 @@
         </div>
     </div>
 
-    <div id="orderModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 hidden justify-center items-end sm:items-center p-4 transition-all duration-300 opacity-0">
+    <div id="orderModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden justify-center items-end sm:items-center p-4 transition-all duration-300 opacity-0">
         <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden transform translate-y-full sm:translate-y-0 transition-transform duration-300 flex flex-col">
-            
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <h3 class="font-bold text-slate-800 text-lg flex items-center">
                     <i class="fa-solid fa-calendar-days text-emerald-500 mr-2"></i>選擇訂餐日期
                 </h3>
                 <button onclick="closeOrderModal()" class="text-slate-400 hover:text-slate-600 p-1">
-                    <i class="fa-solid fa-xmark text-xl"></i>
+                    <i class="fa-solid fa-xmark text-xl text-slate-400"></i>
                 </button>
             </div>
-
             <div class="p-6 bg-white space-y-4">
                 <div class="space-y-2">
                     <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">請選擇您要訂餐的日期：</label>
-                    <div class="relative">
-                        <input type="date" id="modalDateInput" 
-                               class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-base font-medium text-slate-800">
-                    </div>
+                    <input type="date" id="modalDateInput" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-base font-medium text-slate-800">
                 </div>
                 <p class="text-xs text-slate-400 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                    💡 提示：點擊上方欄位開啟行事曆選好日期後，請點擊下方藍色按鈕前往系統。
+                    💡 提示：點擊下方按鈕後，iService 將在下方展開，**頂部的秒針時鐘會持續留存幫您倒數搶餐**！
                 </p>
             </div>
-
             <div class="p-5 border-t border-slate-100 bg-slate-50 flex space-x-3">
                 <button onclick="closeOrderModal()" class="flex-1 py-3 px-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 font-semibold rounded-xl transition">
                     取消
@@ -163,7 +166,13 @@
         const modalDateInput = document.getElementById('modalDateInput');
         const liveClockSpan = document.querySelector('#liveClock span');
 
-        // --- 0. 即時時間更新邏輯 (HH:mm:ss) ---
+        const mainMenu = document.getElementById('mainMenu');
+        const mainFooter = document.getElementById('mainFooter');
+        const iframeContainer = document.getElementById('iframeContainer');
+        const targetIframe = document.getElementById('targetIframe');
+        const backBtn = document.getElementById('backBtn');
+
+        // --- 0. 精準電子時鐘邏輯 (HH:mm:ss) ---
         function updateClock() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -171,17 +180,39 @@
             const seconds = String(now.getSeconds()).padStart(2, '0');
             liveClockSpan.textContent = `${hours}:${minutes}:${seconds}`;
         }
-        // 每秒跳動一次
         setInterval(updateClock, 1000);
 
-        // 初始化設定
         window.addEventListener('DOMContentLoaded', () => {
-            updateClock(); // 網頁一打開立刻顯示時間，不用等一秒
+            updateClock();
             const today = new Date().toISOString().split('T')[0];
             modalDateInput.value = today;
         });
 
-        // --- 1. 菜單彈窗控制 ---
+        // --- 1. 子母畫面切換核心（讓時鐘不消失的關鍵） ---
+        function loadIframe(url) {
+            // 隱藏主選單與頁尾
+            mainMenu.classList.add('hidden');
+            mainFooter.classList.add('hidden');
+            
+            // 顯示返回按鈕與 Iframe 容器
+            backBtn.classList.remove('hidden');
+            iframeContainer.classList.remove('hidden');
+            
+            // 載入目標網址
+            targetIframe.src = url;
+        }
+
+        function backToMenu() {
+            // 回到工具首頁
+            iframeContainer.classList.add('hidden');
+            backBtn.classList.add('hidden');
+            targetIframe.src = ""; // 清空，釋放記憶體
+            
+            mainMenu.classList.remove('hidden');
+            mainFooter.classList.remove('hidden');
+        }
+
+        // --- 2. 菜單彈窗控制 ---
         function openMenu() {
             menuModal.classList.remove('hidden');
             menuModal.classList.add('flex');
@@ -202,13 +233,11 @@
             setTimeout(() => {
                 menuModal.classList.add('hidden');
                 menuModal.classList.remove('flex');
-                if (goToOrder) {
-                    openOrderModal(); // 點擊去訂餐直接幫他打開日期彈窗
-                }
+                if (goToOrder) openOrderModal();
             }, 300);
         }
 
-        // --- 2. 訂餐日期自訂彈窗控制 ---
+        // --- 3. 直接訂餐彈窗與傳值 ---
         function openOrderModal() {
             orderModal.classList.remove('hidden');
             orderModal.classList.add('flex');
@@ -227,7 +256,6 @@
             }, 300);
         }
 
-        // 按下藍色按鈕後出發前往訂餐網址
         function submitOrder() {
             const selectedDate = modalDateInput.value;
             if (!selectedDate) {
@@ -236,13 +264,12 @@
             }
             
             const targetUrl = `https://app.inventec.com/iServicePWA/OrderDailyMeals.html?dt=${selectedDate}&site=TRDC`;
-            window.location.href = targetUrl;
+            
+            // 關閉選擇日期的彈窗
             closeOrderModal();
-        }
-
-        // --- 3. 看訂餐結果 ---
-        function goToResult() {
-            window.location.href = 'https://app.inventec.com/iServicePWA/DaxiOrderMeal.html?rid=A0001';
+            
+            // 重要：不跳頁，而是直接在下方子畫面載入！
+            loadIframe(targetUrl);
         }
     </script>
 </body>

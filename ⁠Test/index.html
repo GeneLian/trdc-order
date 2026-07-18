@@ -1,1 +1,48 @@
+// ==UserScript==
+// @name         TRDC 智慧文字搶餐腳本
+// @match        https://app.inventec.com/iServicePWA/*
+// @run-at       document-end
+// ==/UserScript==
 
+(function() {
+    'use strict';
+    // 1. 讀取在首頁設定的 Priority 排行榜
+    const active = localStorage.getItem('trdc_robot_active');
+    if (active !== 'true') return;
+
+    const config = JSON.parse(localStorage.getItem('trdc_robot_config') || '[]');
+    if (config.length === 0) return;
+
+    // 2. 依序執行 Priority 1 -> 2 -> 3 智能文字配對
+    let clicked = false;
+    for (let item of config) {
+        if (clicked) break;
+        
+        // 尋找符合「自助餐A餐」或「自助餐B餐」的標題容器
+        const headings = Array.from(document.querySelectorAll('div, p, span, h3'));
+        const targetHeading = headings.find(el => el.textContent.includes(item.mealType));
+        
+        if (targetHeading) {
+            // 往父層級查找該區域下的所有時段按鈕
+            const parentSection = targetHeading.closest('.flex-col, div'); 
+            if (parentSection) {
+                const buttons = Array.from(parentSection.querySelectorAll('button, .time-grid'));
+                const targetBtn = buttons.find(btn => btn.textContent.includes(item.timeSlot));
+                
+                // 如果按鈕存在且未售罄，立刻執行毫秒點擊
+                if (targetBtn && !targetBtn.disabled && !targetBtn.textContent.includes('售罄')) {
+                    targetBtn.click();
+                    clicked = true;
+                    
+                    // 3. 點選完畢，立刻尋找底部的「確認前往訂餐/送出」按鈕秒送
+                    setTimeout(() => {
+                        const submitBtn = Array.from(document.querySelectorAll('button')).find(btn => btn.textContent.includes('確認') || btn.textContent.includes('訂餐'));
+                        if (submitBtn) submitBtn.click();
+                        localStorage.removeItem('trdc_robot_active'); // 搶餐完自動關閉防重複
+                    }, 50);
+                    break;
+                }
+            }
+        }
+    }
+})();

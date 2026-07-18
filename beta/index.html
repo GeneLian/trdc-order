@@ -1,1 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TRDC 訂餐工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        touch-action: manipulation;
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col justify-between min-h-screen font-sans overflow-x-hidden pt-[65px]">
 
+    <header id="mainHeader" class="bg-white shadow-md border-b border-slate-100 py-3 px-4 fixed top-0 left-0 right-0 h-[65px] z-[100]">
+        <div class="max-w-md mx-auto flex items-center justify-between h-full">
+            <div class="flex items-center space-x-2">
+                <button id="backBtn" onclick="backToMenu()" class="hidden mr-2 p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl transition">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div class="bg-blue-500 text-white p-2 rounded-xl shadow-md shadow-blue-200">
+                    <i class="fa-solid fa-utensils text-sm"></i>
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold tracking-tight">TRDC 訂餐工具</h1>
+                    <p class="text-[10px] text-slate-400">測試版 v4.0-Debug</p>
+                </div>
+            </div>
+            
+            <div class="text-right flex items-center">
+                <div id="liveClock" class="font-mono text-base font-black bg-slate-900 text-green-400 px-2.5 py-1 rounded-lg border border-slate-800 shadow-xl flex items-center space-x-1 tracking-wider">
+                    <i class="fa-regular fa-clock text-xs text-red-500"></i>
+                    <span>00:00:00</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="robotStatusBar" class="hidden bg-red-600 text-white text-center py-2 text-xs font-bold fixed top-[65px] left-0 right-0 z-[99] shadow-md animate-pulse">
+        <i class="fa-solid fa-robot mr-1"></i> 搶餐機器人已就緒！將於 19:59:59.800 自動發射...
+    </div>
+
+    <main id="mainMenu" class="flex-grow flex items-center justify-center px-6 py-4 mt-2">
+        <div class="w-full max-w-md space-y-3">
+            
+            <button onclick="openMenu()" class="w-full flex items-center justify-between p-4 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-blue-300 active:scale-98 transition duration-150 text-left">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-amber-100 text-amber-600 p-3 rounded-xl">
+                        <i class="fa-solid fa-map-marked-alt text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm text-slate-800">1. 看一下菜單 🤔</h3>
+                        <p class="text-xs text-slate-500">查看本周最新菜單圖片</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
+            </button>
+
+            <button onclick="openOrderModal()" class="w-full flex items-center justify-between p-4 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-blue-300 active:scale-98 transition duration-150 text-left">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-emerald-100 text-emerald-600 p-3 rounded-xl">
+                        <i class="fa-solid fa-calendar-check text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm text-slate-800">2. 直接訂餐 🤤</h3>
+                        <p class="text-xs text-slate-500">選擇日期並開啟訂餐系統</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
+            </button>
+
+            <button onclick="loadIframe('https://app.inventec.com/iServicePWA/DaxiOrderMeal.html?rid=A0001')" class="w-full flex items-center justify-between p-4 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-blue-300 active:scale-98 transition duration-150 text-left">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-blue-100 text-blue-600 p-3 rounded-xl">
+                        <i class="fa-solid fa-qrcode text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm text-slate-800">3. 看訂餐結果 & QRCode</h3>
+                        <p class="text-xs text-slate-500">查詢紀錄並出示取餐碼</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
+            </button>
+
+            <button onclick="openRobotModal()" class="w-full flex items-center justify-between p-4 bg-gradient-to-r from-slate-900 to-slate-800 border border-slate-800 rounded-2xl shadow-lg hover:from-black hover:to-slate-900 active:scale-98 transition duration-150 text-left text-white relative overflow-hidden">
+                <div class="flex items-center space-x-4 z-10">
+                    <div class="bg-red-500 text-white p-3 rounded-xl shadow-md shadow-red-900/50">
+                        <i class="fa-solid fa-robot text-lg animate-bounce"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm text-red-400 flex items-center">4. 搶餐機器人設定 🤖 <span class="ml-1.5 px-1.5 py-0.5 text-[9px] bg-red-600 text-white rounded font-normal animate-pulse">BETA</span></h3>
+                        <p class="text-xs text-slate-400">自訂優先度，20:00 自動秒殺搶餐</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-crosshairs text-slate-600 text-sm z-10"></i>
+            </button>
+
+        </div>
+    </main>
+
+    <div id="iframeContainer" class="w-full flex-grow hidden bg-white">
+        <iframe id="targetIframe" src="" class="w-full h-full border-none flex-grow" style="height: calc(100vh - 65px);"></iframe>
+    </div>
+
+    <footer id="mainFooter" class="py-4 text-center text-xs text-slate-400">
+        <p>請依規定的工作日天數選擇正確的日期</p>
+    </footer>
+
+    <div id="menuModal" class="fixed inset-x-0 bottom-0 top-[65px] bg-slate-900/60 backdrop-blur-sm z-[90] hidden justify-center items-end sm:items-center p-4 transition-all duration-300 opacity-0">
+        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden transform translate-y-full sm:translate-y-0 transition-transform duration-300 flex flex-col max-h-[80vh]">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-slate-800 text-base flex items-center">
+                    <i class="fa-solid fa-image text-amber-500 mr-2"></i>本周菜單
+                </h3>
+                <button onclick="closeMenu(false)" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="flex-grow overflow-y-auto p-4 flex flex-col justify-center items-center bg-slate-100 min-h-[250px] relative">
+                <div id="imageLoader" class="absolute inset-0 flex flex-col justify-center items-center bg-slate-100 space-y-2 z-10">
+                    <i class="fa-solid fa-circle-notch fa-spin text-3xl text-blue-500"></i>
+                    <p class="text-xs text-slate-500">菜單圖片載入中...</p>
+                </div>
+                <img id="menuImage" src="https://drive.google.com/thumbnail?sz=w1000&id=1BVJimgGuLN1J5GYFeayJQOg-0fj816Ku" class="max-w-full max-h-[45vh] object-contain rounded-lg shadow-sm z-20 transition-opacity duration-300 opacity-0" onload="handleImageLoaded()">
+            </div>
+            <div class="p-5 border-t border-slate-100 bg-white flex space-x-3">
+                <button onclick="closeMenu(false)" class="flex-1 py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-xl transition">關閉</button>
+                <button onclick="closeMenu(true)" class="flex-1 py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition shadow-lg shadow-blue-200">去訂餐 🤤</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="orderModal" class="fixed inset-x-0 bottom-0 top-[65px] bg-slate-900/60 backdrop-blur-sm z-[90] hidden justify-center items-end sm:items-center p-4 transition-all duration-300 opacity-0">
+        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden transform translate-y-full sm:translate-y-0 transition-transform duration-300 flex flex-col">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-slate-800 text-base flex items-center">
+                    <i class="fa-solid fa-calendar-days text-emerald-500 mr-2"></i>選擇訂餐日期
+                </h3>
+                <button onclick="closeOrderModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 bg-white space-y-4">
+                <div class="space-y-2">
+                    <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">請選擇您要訂餐的日期：</label>
+                    <input type="date" id="modalDateInput" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-base font-medium text-slate-800">
+                </div>
+            </div>
+            <div class="p-5 border-t border-slate-100 bg-slate-50 flex space-x-3">
+                <button onclick="closeOrderModal()" class="flex-1 py-3 px-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 font-semibold rounded-xl transition">取消</button>
+                <button onclick="submitOrder()" class="flex-1 py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition shadow-lg shadow-blue-200 flex items-center justify-center space-x-2">
+                    <span>確認前往訂餐</span>
+                    <i class="fa-solid fa-arrow-right text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="robotModal" class="fixed inset-x-0 bottom-0 top-[65px] bg-slate-900/60 backdrop-blur-sm z-[90] hidden justify-center items-end sm:items-center p-4 transition-all duration-300 opacity-0">
+        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden transform translate-y-full sm:translate-y-0 transition-transform duration-300 flex flex-col max-h-[85vh]">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-slate-800 text-base flex items-center">
+                    <i class="fa-solid fa-robot text-red-500 mr-2"></i>機器人排程設定
+                </h3>
+                <button onclick="closeRobotModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-5 overflow-y-auto space-y-5 bg-white no-scrollbar">
+                <div class="space-y-2 border-b border-slate-100 pb-4">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center">
+                        <span class="bg-slate-800 text-white w-4 h-4 rounded-full inline-flex items-center justify-center text-[10px] mr-1.5">1</span>
+                        請指定搶餐日期：
+                    </label>
+                    <input type="date" id="robotDateInput" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 font-medium text-sm">
+                </div>
+
+                <div class="space-y-3">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center justify-between">
+                        <span class="flex items-center">
+                            <span class="bg-slate-800 text-white w-4 h-4 rounded-full inline-flex items-center justify-center text-[10px] mr-1.5">2</span>
+                            手動點擊時段配置優先度 (最多3個)：
+                        </span>
+                        <span id="priorityCount" class="text-red-500 font-mono font-bold text-[11px]">已選 0/3</span>
+                    </label>
+
+                    <div class="p-3 bg-slate-50 border border-slate-100 rounded-2xl space-y-4 text-slate-700 text-sm shadow-inner">
+                        <div>
+                            <div class="flex items-center space-x-1.5 mb-2 text-xs font-bold text-slate-600">
+                                <i class="fa-solid fa-star text-amber-400"></i>
+                                <span>自助餐A餐</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button type="button" onclick="handleTimeGridClick(this, '自助餐A餐', '11:30')" class="time-grid relative py-3 bg-cyan-600 text-white font-medium rounded-md text-xs transition active:scale-95 border-2 border-transparent">11:30</button>
+                                <button type="button" onclick="handleTimeGridClick(this, '自助餐A餐', '11:40')" class="time-grid relative py-3 bg-cyan-600 text-white font-medium rounded-md text-xs transition active:scale-95 border-2 border-transparent">11:40</button>
+                                <button type="button" onclick="handleTimeGridClick(this, '自助餐A餐', '11:50')" class="time-grid relative py-3 bg-cyan-600 text-white font-medium rounded-md text-xs transition active:scale-95 border-2 border-transparent">11:50</button>
+                                <button type="button" onclick="handleTimeGridClick(this, '自助餐A餐', '12:00')" class="time-grid relative py-3 bg-cyan-600 text-white font-medium rounded-md text-xs transition active:scale-95 border-2 border-transparent">12:00</button>
+                                <button type="button" onclick="handleTimeGridClick(this, '自助餐A餐', '12:10')" class="time-grid relative py-3 bg-cyan-600 text-white font-medium rounded-md text-xs transition active:scale-95 border-2 border-transparent">12:10</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center space-x-1.5 mb-2 text-xs font-bold text-slate-600">
+                                <i class="fa-solid fa-cloud text-blue-400"></i>
+                                <span>自助餐B餐</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button type="button" onclick="handleTimeGridClick(this, '自助餐B餐', '11:30')" class="time-grid relative py-3 bg-cyan-600 text-white font-medium rounded-md text-xs transition active:scale-95 border-2 border-transparent">11:30</button>
+                                <button type="button" onclick="handleTimeGridClick(this, '自助餐B餐', '11:40')" class="time-grid relative py-3 bg-cyan-600 text-white font-medium rounded-md text-xs transition active:scale-95 border-2 border-transparent">11:40</button>
+                                <button type="button" onclick="handleTimeGridClick(this, '自助餐B餐', '11:50')" class="time-grid relative py-3 bg-cyan-600 text-white font-medium rounded-md text-xs transition active:scale-95 border-2 border-transparent">11:50</button>
+                                <button type="button" onclick="handleTimeGridClick(this, '自助餐B餐', '12:00')" class="time-grid relative py-3 bg-cyan-600 text-white font-medium rounded-md text-xs transition active:scale-95 border-2 border-transparent">12:00</button>
+                                <button type="button" onclick="handleTimeGridClick(this, '自助餐B餐', '12:10')" class="time-grid relative py-3 bg-cyan-600 text-white font-medium rounded-md text-xs transition active:scale-95 border-2 border-transparent">12:10</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-5 border-t border-slate-100 bg-slate-50 flex space-x-3">
+                <button onclick="closeRobotModal()" class="flex-1 py-3 px-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 font-semibold rounded-xl transition text-sm">取消</button>
+                <button onclick="saveAndStartRobot()" class="flex-1 py-3 px-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl transition shadow-lg shadow-red-200 flex items-center justify-center space-x-2 text-sm">
+                    <i class="fa-solid fa-bolt text-xs"></i>
+                    <span>啟動自動搶餐</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var menuModal = document.getElementById('menuModal');
+        var menuModalContent = menuModal ? menuModal.querySelector('.transform') : null;
+        var menuImage = document.getElementById('menuImage');
+        var imageLoader = document.getElementById('imageLoader');
+
+        var orderModal = document.getElementById('orderModal');
+        var orderModalContent = orderModal ? orderModal.querySelector('.transform') : null;
+        var modalDateInput = document.getElementById('modalDateInput');
+        var liveClockSpan = document.querySelector('#liveClock span');
+
+        var robotModal = document.getElementById('robotModal');
+        var robotModalContent = robotModal ? robotModal.querySelector('.transform') : null;
+        var robotDateInput = document.getElementById('robotDateInput');
+        var priorityCountLabel = document.getElementById('priorityCount');
+        var robotStatusBar = document.getElementById('robotStatusBar');
+
+        var mainMenu = document.getElementById('mainMenu');
+        var mainFooter = document.getElementById('mainFooter');
+        var iframeContainer = document.getElementById('iframeContainer');
+        var targetIframe = document.getElementById('targetIframe');
+        var backBtn = document.getElementById('backBtn');
+
+        var selectedPriorities = [];
+        var robotTriggered = false;
+
+        function updateClock() {
+            var now = new Date();
+            var hours = String(now.getHours()).padStart(2, '0');
+            var minutes = String(now.getMinutes()).padStart(2, '0');
+            var seconds = String(now.getSeconds()).padStart(2, '0');
+            if(liveClockSpan) {
+                liveClockSpan.textContent = hours + ':' + minutes + ':' + seconds;
+            }
+
+            var activeRobot = localStorage.getItem('trdc_robot_active');
+            if (activeRobot === 'true' && !robotTriggered) {
+                if (now.getHours() === 19 && now.getMinutes() === 59 && now.getSeconds() === 59 && now.getMilliseconds() >= 800) {
+                    robotTriggered = true;
+                    executeRobotLaunch();
+                } else if (now.getHours() === 20 && now.getMinutes() === 0 && now.getSeconds() === 0) {
+                    robotTriggered = true;
+                    executeRobotLaunch();
+                }
+            }
+        }
+        setInterval(updateClock, 50);
+
+        window.addEventListener('DOMContentLoaded', function() {
+            updateClock();
+            var today = new Date().toISOString().split('T')[0];
+            if(modalDateInput) modalDateInput.value = today;
+            if(robotDateInput) robotDateInput.value = today;
+
+            if (localStorage.getItem('trdc_robot_active') === 'true' && robotStatusBar) {
+                robotStatusBar.classList.remove('hidden');
+                document.body.classList.add('pt-[95px]');
+            }
+        });
+
+        function executeRobotLaunch() {
+            var targetDate = localStorage.getItem('trdc_robot_date');
+            if (targetDate) {
+                if(robotStatusBar) robotStatusBar.textContent = "🚀 正在秒速衝入訂餐系統...";
+                setTimeout(function() {
+                    window.location.href = 'https://app.inventec.com/iServicePWA/OrderDailyMeals.html?dt=' + targetDate + '&site=TRDC';
+                }, 50);
+            }
+        }
+
+        function loadIframe(url) {
+            if(mainMenu) mainMenu.classList.add('hidden');
+            if(mainFooter) mainFooter.classList.add('hidden');
+            if(backBtn) backBtn.classList.remove('hidden');
+            if(iframeContainer) iframeContainer.classList.remove('hidden');
+            if(targetIframe) targetIframe.src = url;
+        }
+
+        function backToMenu() {
+            if(iframeContainer) iframeContainer.classList.add('hidden');
+            if(backBtn) backBtn.classList.add('hidden');
+            if(targetIframe) targetIframe.src = ""; 
+            if(mainMenu) mainMenu.classList.remove('hidden');
+            if(mainFooter) mainFooter.classList.remove('hidden');
+        }
+
+        function openMenu() {
+            if(!menuModal || !menuModalContent) return;
+            menuModal.classList.remove('hidden');
+            menuModal.classList.add('flex');
+            setTimeout(function() {
+                menuModal.classList.add('opacity-100');
+                menuModalContent.classList.remove('translate-y-full');
+            }, 10);
+        }
+
+        function handleImageLoaded() {
+            if(imageLoader) imageLoader.classList.add('hidden');
+            if(menuImage) menuImage.classList.remove('opacity-0');
+        }
+
+        function closeMenu(goToOrder) {
+            if(!menuModal || !menuModalContent) return;
+            menuModal.classList.remove('opacity-100');
+            menuModalContent.classList.add('translate-y-full');
+            setTimeout(function() {
+                menuModal.classList.add('hidden');
+                menuModal.classList.remove('flex');
+                if (goToOrder) openOrderModal();
+            }, 300);
+        }
+
+        function openOrderModal() {
+            if(!orderModal || !orderModalContent) return;
+            orderModal.classList.remove('hidden');
+            orderModal.classList.add('flex');
+            setTimeout(function() {
+                orderModal.classList.add('opacity-100');
+                orderModalContent.classList.remove('translate-y-full');
+            }, 10);
+        }
+
+        function closeOrderModal() {
+            if(!orderModal || !orderModalContent) return;
+            orderModal.classList.remove('opacity-100');
+            orderModalContent.classList.add('translate-y-full');
+            setTimeout(function() {
+                orderModal.classList.add('hidden');
+                orderModal.classList.remove('flex');
+            }, 300);
+        }
+
+        function submitOrder() {
+            var selectedDate = modalDateInput ? modalDateInput.value : '';
+            if (!selectedDate) {
+                alert('請先選擇正確的日期喔！');
+                return;
+            }
+            closeOrderModal();
+            loadIframe('https://app.inventec.com/iServicePWA/OrderDailyMeals.html?dt=' + selectedDate + '&site=TRDC');
+        }
+
+        function openRobotModal() {
+            if(!robotModal || !robotModalContent) return;
+            robotModal.classList.remove('hidden');
+            robotModal.classList.add('flex');
+            setTimeout(function() {
+                robotModal.classList.add('opacity-100');
+                robotModalContent.classList.remove('translate-y-full');
+            }, 10);
+        }
+
+        function closeRobotModal() {
+            if(!robotModal || !robotModalContent) return;
+            robotModal.classList.remove('opacity-100');
+            robotModalContent.classList.add('translate-y-full');
+            setTimeout(function() {
+                robotModal.classList.add('hidden');
+                robotModal.classList.remove('flex');
+            }, 300);
+        }
+
+        function handleTimeGridClick(element, mealType, timeSlot) {
+            var existingIndex = -1;
+            for(var i=0; i<selectedPriorities.length; i++) {
+                if(selectedPriorities[i].element === element) {
+                    existingIndex = i;
+                    break;
+                }
+            }
+
+            if (existingIndex > -1) {
+                selectedPriorities.splice(existingIndex, 1);
+                removeGridBadgeEffect(element);
+            } else {
+                if (selectedPriorities.length >= 3) {
+                    alert('最多隻能設定 3 個優先度順序喔！');
+                    return;
+                }
+                selectedPriorities.push({ element: element, mealType: mealType, timeSlot: timeSlot });
+            }
+            refreshAllBadges();
+        }
+
+        function removeGridBadgeEffect(element) {
+            element.classList.remove('ring-4', 'ring-red-500', 'border-white', 'bg-slate-800');
+            element.classList.add('bg-cyan-600');
+            var badge = element.querySelector('.priority-badge');
+            if (badge) badge.remove();
+        }
+
+        function refreshAllBadges() {
+            var allGrids = document.querySelectorAll('.time-grid');
+            for(var i=0; i<allGrids.length; i++) {
+                var grid = allGrids[i];
+                var oldBadge = grid.querySelector('.priority-badge');
+                if (oldBadge) oldBadge.remove();
+                grid.classList.remove('ring-4', 'ring-red-500', 'border-white', 'scale-95');
+                grid.classList.add('bg-cyan-600');
+            }
+
+            for(var j=0; j<selectedPriorities.length; j++) {
+                var idx = j + 1;
+                var el = selectedPriorities[j].element;
+                el.classList.remove('bg-cyan-600');
+                el.classList.add('ring-4', 'ring-red-500', 'border-white', 'scale-95');
+
+                var badge = document.createElement('span');
+                badge.className = 'priority-badge absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border border-white shadow-md';
+                badge.textContent = idx;
+                el.appendChild(badge);
+            }
+
+            if(priorityCountLabel) {
+                priorityCountLabel.textContent = '已選 ' + selectedPriorities.length + '/3';
+            }
+        }
+
+        function saveAndStartRobot() {
+            var robotDate = robotDateInput ? robotDateInput.value : '';
+            if (!robotDate) {
+                alert('請先指定搶餐日期！');
+                return;
+            }
+            if (selectedPriorities.length === 0) {
+                alert('請至少點擊挑選一個優先時段配置！');
+                return;
+            }
+
+            var configData = [];
+            for(var i=0; i<selectedPriorities.length; i++) {
+                configData.push({
+                    priority: i + 1,
+                    mealType: selectedPriorities[i].mealType,
+                    timeSlot: selectedPriorities[i].timeSlot
+                });
+            }
+
+            localStorage.setItem('trdc_robot_active', 'true');
+            localStorage.setItem('trdc_robot_date', robotDate);
+            localStorage.setItem('trdc_robot_config', JSON.stringify(configData));
+
+            if(robotStatusBar) {
+                robotStatusBar.classList.remove('hidden');
+                document.body.classList.add('pt-[95px]');
+            }
+            robotTriggered = false;
+
+            closeRobotModal();
+            alert('🤖 搶餐機器人配置成功！\n排定日期：' + robotDate + '\n優先級已保存，今晚 20:00:00 將完美發射。');
+        }
+    </script>
+</body>
+</html>

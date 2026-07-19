@@ -34,15 +34,15 @@
             <!-- 【秘密彩蛋觸發區域】：優化防放大時鐘 -->
             <div id="top-clock" style="touch-action: manipulation;" class="bg-[#111424] text-[#10B981] font-mono text-sm font-bold px-3 py-1.5 rounded-xl shadow-inner flex items-center space-x-1.5 select-none active:scale-95 transition cursor-pointer">
                 <i class="fa-regular fa-clock text-xs"></i>
-                <span id="live-clock">19:06:44</span>
+                <span id="live-clock">19:28:59</span>
             </div>
         </header>
 
         <!-- 選單內容主要區域 -->
         <main class="p-5 flex-1 space-y-4 overflow-y-auto no-scrollbar">
             
-            <!-- 選項 1：看一下菜單 (已修正為高相容性經典圖標) -->
-            <div class="bg-white border border-slate-100 rounded-3xl p-4 flex justify-between items-center shadow-sm hover:bg-slate-50 transition cursor-pointer">
+            <!-- 選項 1：看一下菜單 -->
+            <div onclick="window.open('https://script.google.com/macros/s/AKfycbwPsc2H6wT8m9u9H2vK1F9pE-J-oBwWk_vL7C1D/exec', '_blank')" class="bg-white border border-slate-100 rounded-3xl p-4 flex justify-between items-center shadow-sm hover:bg-slate-50 transition cursor-pointer">
                 <div class="flex items-center space-x-4">
                     <div class="w-14 h-14 bg-gradient-to-br from-amber-50 to-orange-100/50 border border-amber-200/40 rounded-2xl flex items-center justify-center shadow-inner">
                         <i class="fa-solid fa-file-lines text-xl text-orange-600"></i>
@@ -56,7 +56,7 @@
             </div>
 
             <!-- 選項 2：直接訂餐 -->
-            <div class="bg-white border border-slate-100 rounded-3xl p-4 flex justify-between items-center shadow-sm hover:bg-slate-50 transition cursor-pointer">
+            <div onclick="window.open('https://script.google.com/macros/s/AKfycbwPsc2H6wT8m9u9H2vK1F9pE-J-oBwWk_vL7C1D/exec?page=order', '_blank')" class="bg-white border border-slate-100 rounded-3xl p-4 flex justify-between items-center shadow-sm hover:bg-slate-50 transition cursor-pointer">
                 <div class="flex items-center space-x-4">
                     <div class="w-14 h-14 bg-gradient-to-br from-emerald-50 to-teal-100/50 border border-emerald-200/40 rounded-2xl flex items-center justify-center shadow-inner">
                         <i class="fa-solid fa-calendar-check text-xl text-emerald-600"></i>
@@ -70,7 +70,7 @@
             </div>
 
             <!-- 選項 3：看訂餐結果 -->
-            <div class="bg-white border border-slate-100 rounded-3xl p-4 flex justify-between items-center shadow-sm hover:bg-slate-50 transition cursor-pointer">
+            <div onclick="window.open('https://script.google.com/macros/s/AKfycbwPsc2H6wT8m9u9H2vK1F9pE-J-oBwWk_vL7C1D/exec?page=result', '_blank')" class="bg-white border border-slate-100 rounded-3xl p-4 flex justify-between items-center shadow-sm hover:bg-slate-50 transition cursor-pointer">
                 <div class="flex items-center space-x-4">
                     <div class="w-14 h-14 bg-gradient-to-br from-blue-50 to-indigo-100/50 border border-blue-200/40 rounded-2xl flex items-center justify-center shadow-inner">
                         <i class="fa-solid fa-qrcode text-xl text-blue-600"></i>

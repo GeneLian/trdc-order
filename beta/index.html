@@ -16,7 +16,7 @@
 </head>
 <body class="bg-slate-50 font-sans min-h-screen flex justify-center items-start sm:py-8">
 
-    <!-- 主容器，完全模擬第二張圖的視覺 -->
+    <!-- 主容器，完全模擬 v3.9 的主視覺 -->
     <div class="w-full max-w-md bg-white min-h-screen sm:min-h-[800px] sm:rounded-3xl shadow-xl overflow-hidden flex flex-col relative border border-slate-100">
         
         <!-- 頂部標頭列 -->
@@ -31,8 +31,8 @@
                 </div>
             </div>
             
-            <!-- 【秘密彩蛋觸發區域】：頂部發光時鐘 -->
-            <div id="top-clock" class="bg-[#111424] text-[#10B981] font-mono text-sm font-bold px-3 py-1.5 rounded-xl shadow-inner flex items-center space-x-1.5 select-none active:scale-95 transition cursor-pointer">
+            <!-- 【秘密彩蛋觸發區域】：優化防放大時鐘 -->
+            <div id="top-clock" style="touch-action: manipulation;" class="bg-[#111424] text-[#10B981] font-mono text-sm font-bold px-3 py-1.5 rounded-xl shadow-inner flex items-center space-x-1.5 select-none active:scale-95 transition cursor-pointer">
                 <i class="fa-regular fa-clock text-xs"></i>
                 <span id="live-clock">12:39:00</span>
             </div>
@@ -122,12 +122,15 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // 2. 【1秒6下極速時鐘彩蛋演算法】
+        // 2. 【防雙擊放大優化版 - 1秒6下極速時鐘彩蛋監聽】
         let trdcClickTimestamps = [];
         const clockTarget = document.getElementById('top-clock');
 
         if (clockTarget) {
-            clockTarget.addEventListener('click', () => {
+            // 處理手機端觸控，精準擋下 iOS 的雙擊放大預設動作
+            clockTarget.addEventListener('touchend', (e) => {
+                e.preventDefault(); // 核心防禦：阻斷 iOS 雙擊放大畫面機制
+                
                 const now = Date.now();
                 trdcClickTimestamps.push(now);
                 
@@ -135,23 +138,41 @@
                     trdcClickTimestamps.shift();
                 }
                 
-                // 當 1 秒內確實點滿 6 下
                 if (trdcClickTimestamps.length === 6 && (trdcClickTimestamps[5] - trdcClickTimestamps[0] <= 1000)) {
-                    trdcClickTimestamps = []; // 清空計數
-                    
-                    // 解鎖：顯示第四個選項並加上流暢的滑入動畫
-                    const secretOpt = document.getElementById('secret-option-4');
-                    if (secretOpt) {
-                        secretOpt.style.display = 'flex'; // 先轉為彈性佈局顯示
-                        setTimeout(() => {
-                            secretOpt.classList.remove('opacity-0', 'translate-y-4');
-                        }, 50);
-                        
-                        // 手機震動反饋（表示成功解鎖暗號）
-                        if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
-                    }
+                    trdcClickTimestamps = []; 
+                    triggerSecretOption();
                 }
             });
+
+            // 保留電腦版 click 相容測試
+            clockTarget.addEventListener('click', (e) => {
+                if (e.screenX === 0 && e.screenY === 0) return; // 避免手機端重複計算
+                
+                const now = Date.now();
+                trdcClickTimestamps.push(now);
+                
+                if (trdcClickTimestamps.length > 6) {
+                    trdcClickTimestamps.shift();
+                }
+                
+                if (trdcClickTimestamps.length === 6 && (trdcClickTimestamps[5] - trdcClickTimestamps[0] <= 1000)) {
+                    trdcClickTimestamps = []; 
+                    triggerSecretOption();
+                }
+            });
+        }
+
+        // 觸發顯示第 4 選項的動畫函數
+        function triggerSecretOption() {
+            const secretOpt = document.getElementById('secret-option-4');
+            if (secretOpt) {
+                secretOpt.style.display = 'flex'; 
+                setTimeout(() => {
+                    secretOpt.classList.remove('opacity-0', 'translate-y-4');
+                }, 50);
+                
+                if (navigator.vibrate) navigator.vibrate([60, 40, 60]); // 震動反饋
+            }
         }
 
         // 3. 點擊第四個選項觸發的自動複製功能
@@ -161,11 +182,10 @@
             navigator.clipboard.writeText(code).then(function() {
                 const textEl = document.getElementById('secret-btn-text');
                 if(textEl) {
-                    textEl.textContent = "🎉 複製成功！快去新增瀏覽器書籤吧";
+                    textEl.textContent = "🎉 複製成功！快去新增手機書籤吧";
                     textEl.classList.remove('text-slate-400');
                     textEl.classList.add('text-emerald-400');
                     
-                    // 兩秒後還原文字狀態
                     setTimeout(() => {
                         textEl.textContent = "點擊自動複製實境攔截碼";
                         textEl.classList.remove('text-emerald-400');

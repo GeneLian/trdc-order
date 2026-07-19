@@ -3,62 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRDC 訂餐工具 v3.9-Pixel</title>
+    <title>TRDC 訂餐工具 v3.9-Modern</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- FontAwesome 圖標 (保留給標頭時鐘使用) -->
+    <!-- FontAwesome 圖標 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         /* 隱藏滾動條 */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* ==================== 8-bit CSS 像素圖標專區 ==================== */
-        /* 每個點大小為 2px * 2px，依據座標著色 */
-        
-        /* 1. 復古菜單/地圖圖標 (橘褐色系) */
-        .pixel-menu {
-            width: 2px; height: 2px;
-            background: transparent;
-            box-shadow:
-                /* 左側摺頁 */
-                4px 2px #c2410c, 6px 2px #c2410c, 4px 4px #ea580c, 6px 4px #ea580c, 4px 6px #ea580c, 6px 6px #ea580c, 4px 8px #ea580c, 6px 8px #ea580c, 4px 10px #ea580c, 6px 10px #ea580c, 4px 12px #c2410c, 6px 12px #c2410c,
-                /* 中間摺頁 */
-                8px 4px #b45309, 10px 4px #b45309, 8px 6px #d97706, 10px 6px #d97706, 8px 8px #d97706, 10px 8px #d97706, 8px 10px #d97706, 10px 10px #d97706, 8px 12px #d97706, 10px 12px #d97706, 8px 14px #b45309, 10px 14px #b45309,
-                /* 右側摺頁 */
-                12px 2px #c2410c, 14px 2px #c2410c, 12px 4px #ea580c, 14px 4px #ea580c, 12px 6px #ea580c, 14px 6px #ea580c, 12px 8px #ea580c, 14px 8px #ea580c, 12px 10px #ea580c, 14px 10px #ea580c, 12px 12px #c2410c, 14px 12px #c2410c;
-        }
-
-        /* 2. 復古日曆圖標 (綠色系) */
-        .pixel-calendar {
-            width: 2px; height: 2px;
-            background: transparent;
-            box-shadow:
-                /* 上方兩個勾環 */
-                6px 2px #047857, 12px 2px #047857, 6px 4px #047857, 12px 4px #047857,
-                /* 日曆主體外框 */
-                4px 6px #059669, 6px 6px #059669, 8px 6px #059669, 10px 6px #059669, 12px 6px #059669, 14px 6px #059669, 16px 6px #059669,
-                4px 8px #059669, 16px 8px #059669,
-                4px 10px #059669, 8px 10px #10b981, 12px 10px #10b981, 16px 10px #059669,
-                4px 12px #059669, 10px 12px #10b981, 14px 12px #10b981, 16px 12px #059669,
-                4px 14px #059669, 6px 14px #059669, 8px 14px #059669, 10px 14px #059669, 12px 14px #059669, 14px 14px #059669, 16px 14px #059669;
-        }
-
-        /* 3. 復古 QR Code 圖標 (藍色系) */
-        .pixel-qrcode {
-            width: 2px; height: 2px;
-            background: transparent;
-            box-shadow:
-                /* 左上角迴路 */
-                2px 2px #1d4ed8, 4px 2px #1d4ed8, 6px 2px #1d4ed8, 2px 4px #1d4ed8, 6px 4px #1d4ed8, 2px 6px #1d4ed8, 4px 6px #1d4ed8, 6px 6px #1d4ed8,
-                /* 右上角迴路 */
-                12px 2px #1d4ed8, 14px 2px #1d4ed8, 16px 2px #1d4ed8, 12px 4px #1d4ed8, 16px 4px #1d4ed8, 12px 6px #1d4ed8, 14px 6px #1d4ed8, 16px 6px #1d4ed8,
-                /* 左下角迴路 */
-                2px 12px #1d4ed8, 4px 12px #1d4ed8, 6px 12px #1d4ed8, 2px 14px #1d4ed8, 6px 14px #1d4ed8, 2px 16px #1d4ed8, 4px 16px #1d4ed8, 6px 16px #1d4ed8,
-                /* 右下角散落碼 */
-                12px 12px #3b82f6, 16px 14px #3b82f6, 14px 16px #3b82f6;
-        }
     </style>
 </head>
 <body class="bg-slate-50 font-sans min-h-screen flex justify-center items-start sm:py-8">
@@ -81,19 +34,19 @@
             <!-- 【秘密彩蛋觸發區域】：優化防放大時鐘 -->
             <div id="top-clock" style="touch-action: manipulation;" class="bg-[#111424] text-[#10B981] font-mono text-sm font-bold px-3 py-1.5 rounded-xl shadow-inner flex items-center space-x-1.5 select-none active:scale-95 transition cursor-pointer">
                 <i class="fa-regular fa-clock text-xs"></i>
-                <span id="live-clock">12:39:00</span>
+                <span id="live-clock">18:56:22</span>
             </div>
         </header>
 
         <!-- 選單內容主要區域 -->
         <main class="p-5 flex-1 space-y-4 overflow-y-auto no-scrollbar">
             
-            <!-- 選項 1：看菜單 (像素風修改) -->
+            <!-- 選項 1：看一下菜單 -->
             <div class="bg-white border border-slate-100 rounded-3xl p-4 flex justify-between items-center shadow-sm hover:bg-slate-50 transition cursor-pointer">
                 <div class="flex items-center space-x-4">
-                    <!-- 像素外框容器 -->
-                    <div class="w-14 h-14 bg-amber-50 border-2 border-amber-200/50 rounded-2xl flex items-center justify-center relative overflow-hidden">
-                        <div class="pixel-menu scale-[2.2] transform translate-x-[-1px] translate-y-[-1px]"></div>
+                    <!-- 統一精緻雙色風格外框 -->
+                    <div class="w-14 h-14 bg-gradient-to-br from-amber-50 to-orange-100/50 border border-amber-200/40 rounded-2xl flex items-center justify-center shadow-inner">
+                        <i class="fa-solid fa-map-dashed text-xl text-orange-600"></i>
                     </div>
                     <div>
                         <h2 class="font-bold text-slate-800 text-base">1. 看一下菜單 🤔</h2>
@@ -103,12 +56,12 @@
                 <i class="fa-solid fa-chevron-right text-slate-300 text-sm pr-2"></i>
             </div>
 
-            <!-- 選項 2：直接訂餐 (像素風修改) -->
+            <!-- 選項 2：直接訂餐 -->
             <div class="bg-white border border-slate-100 rounded-3xl p-4 flex justify-between items-center shadow-sm hover:bg-slate-50 transition cursor-pointer">
                 <div class="flex items-center space-x-4">
-                    <!-- 像素外框容器 -->
-                    <div class="w-14 h-14 bg-emerald-50 border-2 border-emerald-200/50 rounded-2xl flex items-center justify-center relative overflow-hidden">
-                        <div class="pixel-calendar scale-[2.2] transform translate-x-[-1px] translate-y-[-1px]"></div>
+                    <!-- 統一精緻雙色風格外框 -->
+                    <div class="w-14 h-14 bg-gradient-to-br from-emerald-50 to-teal-100/50 border border-emerald-200/40 rounded-2xl flex items-center justify-center shadow-inner">
+                        <i class="fa-solid fa-calendar-check text-xl text-emerald-600"></i>
                     </div>
                     <div>
                         <h2 class="font-bold text-slate-800 text-base">2. 直接訂餐 🤤</h2>
@@ -118,12 +71,12 @@
                 <i class="fa-solid fa-chevron-right text-slate-300 text-sm pr-2"></i>
             </div>
 
-            <!-- 選項 3：看訂餐結果 (像素風修改) -->
+            <!-- 選項 3：看訂餐結果 -->
             <div class="bg-white border border-slate-100 rounded-3xl p-4 flex justify-between items-center shadow-sm hover:bg-slate-50 transition cursor-pointer">
                 <div class="flex items-center space-x-4">
-                    <!-- 像素外框容器 -->
-                    <div class="w-14 h-14 bg-blue-50 border-2 border-blue-200/50 rounded-2xl flex items-center justify-center relative overflow-hidden">
-                        <div class="pixel-qrcode scale-[2.2] transform translate-x-[-1px] translate-y-[-1px]"></div>
+                    <!-- 統一精緻雙色風格外框 -->
+                    <div class="w-14 h-14 bg-gradient-to-br from-blue-50 to-indigo-100/50 border border-blue-200/40 rounded-2xl flex items-center justify-center shadow-inner">
+                        <i class="fa-solid fa-qrcode text-xl text-blue-600"></i>
                     </div>
                     <div>
                         <h2 class="font-bold text-slate-800 text-base">3. 看訂餐結果 & QRCode</h2>
@@ -133,11 +86,12 @@
                 <i class="fa-solid fa-chevron-right text-slate-300 text-sm pr-2"></i>
             </div>
 
-            <!-- ==================== ⚡ 隱藏彩蛋：觸發後才現身的第 4 個選項 ⚡ ==================== -->
+            <!-- ==================== ⚡ 隱藏彩蛋：第四個選項 (同步改為統一的高質感雙色風格) ⚡ ==================== -->
             <div id="secret-option-4" class="hidden opacity-0 transform translate-y-4 transition-all duration-500 bg-slate-900 border border-slate-800 rounded-3xl p-4 justify-between items-center shadow-lg shadow-red-900/20 hover:bg-slate-850 cursor-pointer" onclick="copyBookmarkletCode()">
                 <div class="flex items-center space-x-4">
-                    <div class="w-14 h-14 bg-red-950/50 rounded-2xl flex items-center justify-center text-2xl border border-red-900/30">
-                        🤖
+                    <!-- 第四個 Icon：完全與前三個結構與尺寸統一，搭配暗色系紅光的精緻雙色 -->
+                    <div class="w-14 h-14 bg-gradient-to-br from-red-950/40 to-red-900/20 border border-red-900/40 rounded-2xl flex items-center justify-center shadow-inner">
+                        <i class="fa-solid fa-robot text-xl text-red-500"></i>
                     </div>
                     <div>
                         <h2 class="font-black text-red-500 text-base flex items-center">

@@ -3,186 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRDC 訂餐工具 v4.0-Debug</title>
+    <title>TRDC 訂餐工具 v3.9</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- FontAwesome 圖標 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* 隱藏滾動條但保留滾動功能 */
+        /* 隱藏滾動條 */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-slate-100 font-sans min-h-screen flex justify-center items-start sm:py-8">
+<body class="bg-slate-50 font-sans min-h-screen flex justify-center items-start sm:py-8">
 
-    <!-- 主容器，模擬手機寬度 -->
-    <div class="w-full max-w-md bg-white min-h-screen sm:min-h-[850px] sm:rounded-3xl shadow-xl overflow-hidden flex flex-col relative border border-slate-200">
+    <!-- 主容器，完全模擬第二張圖的視覺 -->
+    <div class="w-full max-w-md bg-white min-h-screen sm:min-h-[800px] sm:rounded-3xl shadow-xl overflow-hidden flex flex-col relative border border-slate-100">
         
         <!-- 頂部標頭列 -->
-        <header class="bg-white px-4 py-3 border-b border-slate-100 flex justify-between items-center z-10">
+        <header class="bg-white px-5 py-4 flex justify-between items-center z-10">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-md shadow-blue-200">
-                    <i class="fa-solid fa-utensils text-lg"></i>
+                <div class="w-11 h-11 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-md shadow-blue-100">
+                    <i class="fa-solid fa-utensils text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="font-black text-slate-800 text-base tracking-wide flex items-center">
-                        TRDC 訂餐工具
-                    </h1>
-                    <p class="text-[10px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-md inline-block mt-0.5">測試版 v4.0-Debug</p>
+                    <h1 class="font-black text-slate-800 text-base tracking-wide">TRDC 訂餐工具</h1>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">網頁快捷版 v3.9</p>
                 </div>
             </div>
             
             <!-- 【秘密彩蛋觸發區域】：頂部發光時鐘 -->
-            <div id="top-clock" class="bg-slate-900 text-emerald-400 font-mono text-sm font-bold px-3 py-1.5 rounded-xl shadow-inner flex items-center space-x-1.5 select-none hover:bg-slate-800 transition active:scale-95 cursor-pointer">
-                <i class="fa-regular fa-clock text-xs animate-pulse"></i>
-                <span id="live-clock">19:59:45</span>
+            <div id="top-clock" class="bg-[#111424] text-[#10B981] font-mono text-sm font-bold px-3 py-1.5 rounded-xl shadow-inner flex items-center space-x-1.5 select-none active:scale-95 transition cursor-pointer">
+                <i class="fa-regular fa-clock text-xs"></i>
+                <span id="live-clock">12:39:00</span>
             </div>
         </header>
 
-        <!-- 跑馬燈提示 -->
-        <div class="bg-red-600 text-white text-[11px] font-bold px-4 py-2 text-center flex items-center justify-center space-x-2 shadow-inner">
-            <i class="fa-solid fa-broadcast-tower animate-bounce"></i>
-            <span>搶餐機器人已就緒！將於 19:59:59.800 自動發射...</span>
-        </div>
-
-        <!-- 主要內容區 -->
-        <main class="p-4 space-y-5 flex-1 overflow-y-auto no-scrollbar pb-24">
+        <!-- 選單內容主要區域 -->
+        <main class="p-5 flex-1 space-y-4 overflow-y-auto no-scrollbar">
             
-            <!-- 日期與狀態 -->
-            <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex justify-between items-center">
-                <div>
-                    <p class="text-xs text-slate-400 font-semibold">當前設定日期</p>
-                    <h2 class="text-lg font-black text-slate-700 mt-0.5">2026 / 07 / 22</h2>
+            <!-- 選項 1 -->
+            <div class="bg-white border border-slate-100 rounded-3xl p-4 flex justify-between items-center shadow-sm hover:bg-slate-50 transition cursor-pointer">
+                <div class="flex items-center space-x-4">
+                    <div class="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-2xl">
+                        🗺️
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-slate-800 text-base">1. 看一下菜單 🤔</h2>
+                        <p class="text-xs font-semibold text-slate-400 mt-0.5">查看本周最新菜單圖片</p>
+                    </div>
                 </div>
-                <span class="px-2.5 py-1 bg-amber-50 border border-amber-200 text-amber-700 rounded-full text-xs font-bold flex items-center">
-                    <span class="w-1.5 h-1.5 bg-amber-500 rounded-full mr-1.5 animate-ping"></span>模擬除錯中
-                </span>
+                <i class="fa-solid fa-chevron-right text-slate-300 text-sm pr-2"></i>
             </div>
 
-            <!-- 優先度配置區塊 -->
-            <section class="space-y-3">
-                <div class="flex justify-between items-center px-1">
-                    <h3 class="font-bold text-slate-800 text-sm flex items-center">
-                        <span class="w-5 h-5 bg-slate-800 text-white rounded-full flex items-center justify-center text-[10px] mr-2 font-mono">2</span>
-                        手動點擊時段配置優先度 (最多3個)：
-                    </h3>
-                    <span class="text-xs font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded-full">已選 <span id="v4-count">2</span>/3</span>
-                </div>
-
-                <!-- 模擬時段卡片容器 -->
-                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 space-y-4">
-                    <!-- 自助餐 A -->
-                    <div class="space-y-2">
-                        <div class="text-xs font-bold text-slate-700 flex items-center">
-                            <i class="fa-solid fa-star text-amber-400 mr-1"></i> 自助餐A餐
-                        </div>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button class="py-2.5 bg-blue-600 text-white font-bold rounded-xl text-xs shadow-sm opacity-90">11:30</button>
-                            <button class="py-2.5 bg-blue-600 text-white font-bold rounded-xl text-xs shadow-sm opacity-90">11:40</button>
-                            <button class="py-2.5 bg-white border-2 border-red-500 text-slate-300 font-bold rounded-xl text-xs shadow-sm relative">
-                                11:50
-                                <span class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold border border-white shadow">1</span>
-                            </button>
-                        </div>
+            <!-- 選項 2 -->
+            <div class="bg-white border border-slate-100 rounded-3xl p-4 flex justify-between items-center shadow-sm hover:bg-slate-50 transition cursor-pointer">
+                <div class="flex items-center space-x-4">
+                    <div class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-2xl">
+                        📅
                     </div>
-
-                    <!-- 自助餐 B -->
-                    <div class="space-y-2">
-                        <div class="text-xs font-bold text-slate-700 flex items-center">
-                            <i class="fa-solid fa-cloud text-blue-400 mr-1"></i> 自助餐B餐
-                        </div>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button class="py-2.5 bg-blue-600 text-white font-bold rounded-xl text-xs shadow-sm opacity-90">11:30</button>
-                            <button class="py-2.5 bg-white border-2 border-red-500 text-slate-300 font-bold rounded-xl text-xs shadow-sm relative">
-                                11:40
-                                <span class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold border border-white shadow">2</span>
-                            </button>
-                            <button class="py-2.5 bg-blue-600 text-white font-bold rounded-xl text-xs shadow-sm opacity-90">11:50</button>
-                        </div>
+                    <div>
+                        <h2 class="font-bold text-slate-800 text-base">2. 直接訂餐 🤤</h2>
+                        <p class="text-xs font-semibold text-slate-400 mt-0.5">選擇日期並開啟訂餐系統</p>
                     </div>
                 </div>
-            </section>
+                <i class="fa-solid fa-chevron-right text-slate-300 text-sm pr-2"></i>
+            </div>
+
+            <!-- 選項 3 -->
+            <div class="bg-white border border-slate-100 rounded-3xl p-4 flex justify-between items-center shadow-sm hover:bg-slate-50 transition cursor-pointer">
+                <div class="flex items-center space-x-4">
+                    <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-2xl">
+                        㗊
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-slate-800 text-base">3. 看訂餐結果 & QRCode</h2>
+                        <p class="text-xs font-semibold text-slate-400 mt-0.5">查詢紀錄並出示取餐碼</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-slate-300 text-sm pr-2"></i>
+            </div>
+
+            <!-- ==================== ⚡ 隱藏彩蛋：觸發後才現身的第 4 個選項 ⚡ ==================== -->
+            <div id="secret-option-4" class="hidden opacity-0 transform translate-y-4 transition-all duration-500 bg-slate-900 border border-slate-800 rounded-3xl p-4 justify-between items-center shadow-lg shadow-red-900/20 hover:bg-slate-850 cursor-pointer" onclick="copyBookmarkletCode()">
+                <div class="flex items-center space-x-4">
+                    <div class="w-14 h-14 bg-red-950/50 rounded-2xl flex items-center justify-center text-2xl border border-red-900/30">
+                        🤖
+                    </div>
+                    <div>
+                        <h2 class="font-black text-red-500 text-base flex items-center">
+                            4. 隱藏版一鍵搶餐 <span class="ml-1.5 text-[10px] bg-red-600 text-white font-bold px-1.5 py-0.5 rounded-full animate-pulse">v6.1</span>
+                        </h2>
+                        <p class="text-xs font-bold text-slate-400 mt-0.5" id="secret-btn-text">點擊自動複製實境攔截碼</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-copy text-red-500/70 text-sm pr-2"></i>
+            </div>
+
+            <!-- 底部提示文字 -->
+            <div class="text-center pt-8">
+                <p class="text-xs font-bold text-slate-300 tracking-wide">請依規定的工作天數選擇正確的日期</p>
+            </div>
         </main>
-
-        <!-- 底部固定動作列 -->
-        <footer class="absolute bottom-0 inset-x-0 bg-white border-t border-slate-100 p-4 flex space-x-3 z-10">
-            <button class="w-1/3 py-3 border border-slate-200 text-slate-500 font-bold rounded-xl text-sm hover:bg-slate-50 transition active:scale-95">
-                取消
-            </button>
-            <button class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-black rounded-xl text-sm shadow-lg shadow-red-200 transition active:scale-95 flex items-center justify-center space-x-1.5">
-                <i class="fa-solid fa-bolt"></i>
-                <span>啟動自動搶餐</span>
-            </button>
-        </footer>
-
-        <!-- ==================== 隱藏彩蛋：機器人書籤教學 Modal (預設隱藏 hidden) ==================== -->
-        <div id="robotModal" class="fixed inset-x-0 bottom-0 top-0 bg-slate-900/60 backdrop-blur-sm z-[99] hidden justify-center items-end sm:items-center p-4 opacity-0 transition-all duration-300">
-            <div class="bg-slate-900 w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden transform translate-y-full sm:translate-y-0 transition-transform duration-300 flex flex-col border border-slate-800 text-slate-200">
-                
-                <!-- Modal 標頭 -->
-                <div class="px-6 py-4 border-b border-slate-800 flex justify-between items-center bg-slate-950">
-                    <h3 class="font-black text-red-500 text-base flex items-center">
-                        <i class="fa-solid fa-robot mr-2 animate-bounce"></i>解鎖成功！秘密基地 v6.1
-                    </h3>
-                    <button onclick="closeRobotModal()" class="text-slate-500 hover:text-slate-300 p-1 transition">
-                        <i class="fa-solid fa-xmark text-xl"></i>
-                    </button>
-                </div>
-                
-                <!-- Modal 內容 -->
-                <div class="p-6 space-y-5 text-sm overflow-y-auto max-h-[60vh] no-scrollbar">
-                    
-                    <!-- 步驟 1：複製核心碼 -->
-                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl text-center space-y-2.5">
-                        <p class="text-xs font-bold text-slate-400 tracking-wider">STEP 1. 複製神奇實境攔截碼</p>
-                        <button onclick="copyBookmarkletCode()" class="w-full py-3 px-4 bg-red-600 hover:bg-red-700 text-white font-black rounded-xl shadow-md transition-all duration-200 flex items-center justify-center space-x-2 active:scale-95 cursor-pointer">
-                            <i class="fa-regular fa-copy text-base"></i>
-                            <span id="copyBtnText">一鍵複製核心腳本</span>
-                        </button>
-                    </div>
-
-                    <!-- 步驟 2：圖文防呆教學 -->
-                    <div class="space-y-4 text-xs">
-                        <div class="space-y-1.5">
-                            <p class="font-bold text-slate-300 flex items-center text-sm">
-                                <i class="fa-solid fa-bookmark text-blue-500 mr-2"></i>STEP 2. 如何加入手機書籤？(僅需設定一次)
-                            </p>
-                            <div class="border-l-2 border-slate-700 pl-3.5 space-y-2 text-slate-400">
-                                <p><b>1. 隨意存書籤</b>：將本頁或任何網頁存成瀏覽器書籤。</p>
-                                <p><b>2. 編輯書籤</b>：前往書籤選單點擊編輯，名稱修改為 <span class="text-red-400 font-bold">🤖 TRDC 一鍵搶餐</span>。</p>
-                                <p><b>3. 覆蓋網址</b>：刪除原本長長的「網址/URL」內容，並<b>直接「貼上」剛才複製的程式碼</b>後儲存。</p>
-                            </div>
-                        </div>
-
-                        <div class="space-y-1.5">
-                            <p class="font-bold text-slate-300 flex items-center text-sm">
-                                <i class="fa-solid fa-circle-play text-amber-500 mr-2"></i>STEP 3. 搶餐當晚如何完美發射？
-                            </p>
-                            <div class="border-l-2 border-slate-700 pl-3.5 space-y-2 text-slate-400">
-                                <p>1. 晚上 <b>19:59:30</b>，使用手機的原生 **Safari** 或 **Chrome** 登入並進入公司 **iService 訂餐官方網頁**。</p>
-                                <p>2. 在網址列直接輸入關鍵字 <span class="text-white font-bold bg-slate-800 px-1.5 py-0.5 rounded">TRDC</span>，點擊下方跳出的星星書籤（或直接從書籤夾點開它）。</p>
-                                <p>3. **實境配置**：此時官方網頁頂部會降臨黑色控制面板，直接在畫面上點選你要的餐點，會立刻戴上紅色的 <span class="text-red-400 font-bold">❶、❷、❸</span> 序號發光外框！（再次點擊可取消，後方序號會自動遞補往前靠）。</p>
-                                <p>4. 點擊頂部面板的<b>「🔒 鎖定配置」</b>，時間到 20:00:00 機器人就會以微秒速度自動點擊並送出訂單！</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modal 底部關閉按鈕 -->
-                <div class="p-4 border-t border-slate-800 bg-slate-950">
-                    <button onclick="closeRobotModal()" class="w-full py-3 bg-slate-900 border border-slate-800 text-slate-400 font-bold rounded-xl text-sm hover:bg-slate-800 transition active:scale-95">
-                        關閉秘密基地
-                    </button>
-                </div>
-            </div>
-        </div>
 
     </div>
 
-    <!-- ==================== 核心 JavaScript 邏輯控制區 ==================== -->
+    <!-- ==================== JavaScript 邏輯控制區 ==================== -->
     <script>
-        // 1. 模擬即時時鐘更新功能
+        // 1. 即時時鐘更新
         function updateClock() {
             const clockEl = document.getElementById('live-clock');
             if (clockEl) {
@@ -195,7 +122,7 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // 2. 【1秒6下極速彩蛋監聽演算法】
+        // 2. 【1秒6下極速時鐘彩蛋演算法】
         let trdcClickTimestamps = [];
         const clockTarget = document.getElementById('top-clock');
 
@@ -204,58 +131,49 @@
                 const now = Date.now();
                 trdcClickTimestamps.push(now);
                 
-                // 陣列只保留最後 6 下的點擊時間戳記
                 if (trdcClickTimestamps.length > 6) {
                     trdcClickTimestamps.shift();
                 }
                 
-                // 判定機制：點滿 6 下，且第 6 下與第 1 下的時間間隔在 1000 毫秒（1秒）之內
+                // 當 1 秒內確實點滿 6 下
                 if (trdcClickTimestamps.length === 6 && (trdcClickTimestamps[5] - trdcClickTimestamps[0] <= 1000)) {
-                    trdcClickTimestamps = []; // 觸發成功後立即清空陣列，防止連續觸發
-                    openRobotModal(); // 喚醒隱藏秘密基地 Modal
+                    trdcClickTimestamps = []; // 清空計數
+                    
+                    // 解鎖：顯示第四個選項並加上流暢的滑入動畫
+                    const secretOpt = document.getElementById('secret-option-4');
+                    if (secretOpt) {
+                        secretOpt.style.display = 'flex'; // 先轉為彈性佈局顯示
+                        setTimeout(() => {
+                            secretOpt.classList.remove('opacity-0', 'translate-y-4');
+                        }, 50);
+                        
+                        // 手機震動反饋（表示成功解鎖暗號）
+                        if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
+                    }
                 }
             });
         }
 
-        // 3. Modal 視窗打開與關閉動畫控制
-        function openRobotModal() {
-            const modal = document.getElementById('robotModal');
-            if (modal) {
-                modal.classList.remove('hidden');
-                modal.classList.flex = 'flex';
-                setTimeout(() => {
-                    modal.classList.remove('opacity-0');
-                    const innerContent = modal.querySelector('.transform');
-                    if (innerContent) innerContent.classList.remove('translate-y-full');
-                }, 50);
-                // 手機震動回饋：波、波（支援部分行動裝置）
-                if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
-            }
-        }
-
-        function closeRobotModal() {
-            const modal = document.getElementById('robotModal');
-            if (modal) {
-                modal.classList.add('opacity-0');
-                const innerContent = modal.querySelector('.transform');
-                if (innerContent) innerContent.classList.add('translate-y-full');
-                setTimeout(() => { modal.classList.add('hidden'); }, 300);
-            }
-        }
-
-        // 4. 一鍵複製小書籤的核心代碼 (v6.1 完美攔截自動遞補版)
+        // 3. 點擊第四個選項觸發的自動複製功能
         function copyBookmarkletCode() {
-            // 這段字串就是經過純化壓縮、可在手機端網址列完美呼叫執行的小書籤主程式
             var code = "javascript:(function(){if(window.trdc_robot_running){alert('🤖 運作中');return;}window.trdc_robot_running=true;var selectedElements=[];var panel=document.createElement('div');panel.style.cssText='position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:999999;background:black;color:white;padding:12px;border-radius:16px;text-align:center;width:85%;max-width:320px;border:2px solid red;';panel.innerHTML='<div style=\"font-weight:bold;color:red;font-size:14px;\">🤖 TRDC 實境模式 (v6.1)</div><div id=\"status\" style=\"font-size:12px;color:gray;margin:6px 0;\">請依序點擊 1~3 個餐點時段</div><button id=\"lockbtn\" style=\"width:100%;background:red;color:white;border:none;padding:6px;border-radius:8px;font-weight:bold;\">🔒 鎖定配置</button>';document.body.appendChild(panel);var statusDiv=document.getElementById('status');var lockBtn=document.getElementById('lockbtn');function refreshBadges(){selectedElements.forEach(function(el,idx){var badge=el.querySelector('.t-num');if(!badge){badge=document.createElement('span');badge.className='t-num';badge.style.cssText='position:absolute;top:-4px;right:-4px;background:red;color:white;font-size:10px;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;z-index:9999;';el.appendChild(badge);}badge.textContent=idx+1;el.style.outline='3px solid red';el.style.position='relative';});if(statusDiv)statusDiv.textContent='已選: '+selectedElements.length+' 個時段';}function clickHandler(e){if(this.id==='lockbtn'||this.closest('#lockbtn'))return;e.preventDefault();e.stopPropagation();var foundIdx=selectedElements.indexOf(this);if(foundIdx>-1){var badge=this.querySelector('.t-num');if(badge)badge.remove();this.style.outline='none';selectedElements.splice(foundIdx,1);refreshBadges();}else{if(selectedElements.length>=3){alert('最多只能選 3 個備案喔！');return;}selectedElements.push(this);refreshBadges();}}var allButtons=document.querySelectorAll('button, .time-grid, [class*=\"btn\"], [class*=\"item\"]');allButtons.forEach(function(btn){btn.addEventListener('click',clickHandler,true);});lockBtn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();if(selectedElements.length===0){alert('請至少選一個');return;}allButtons.forEach(function(btn){btn.removeEventListener('click',clickHandler,true);});statusDiv.innerHTML='🔒 優先度已鎖定！等待20:00...';lockBtn.style.display='none';var targetTexts=selectedElements.map(function(el){return(el.innerText||el.textContent||\"\").trim().replace(/\\s+/g,\' \');});var launchTimer=setInterval(function(){var btns=Array.from(document.querySelectorAll('button, .time-grid, [class*=\"btn\"], [class*=\"item\"]'));for(var i=0;i<targetTexts.length;i++){var targetText=targetTexts[i];var targetBtn=btns.find(function(b){var t=(b.innerText||b.textContent||\"\").trim().replace(/\\s+/g,\' \');return b.id!=='lockbtn'&&!b.closest('#lockbtn')&&t.indexOf(targetText)>-1&&!b.disabled&&t.indexOf('售罄')===-1;});if(targetBtn){clearInterval(launchTimer);targetBtn.click();setTimeout(function(){var subBtn=Array.from(document.querySelectorAll('button, a')).find(function(b){var t=(b.innerText||b.textContent||\"\").trim();return t.id!=='lockbtn'&&!b.closest('#lockbtn')&&(t.indexOf('確認')>-1||t.indexOf('訂餐')>-1||t.indexOf('送出')>-1);});if(subBtn)subBtn.click();statusDiv.textContent='🎉 已自動秒殺送出！';window.trdc_robot_running=false;},50);return;}}},100);});})();";
             
             navigator.clipboard.writeText(code).then(function() {
-                var btnText = document.getElementById('copyBtnText');
-                if(btnText) {
-                    btnText.textContent = "✅ 已成功複製核心代碼！";
-                    setTimeout(function() { btnText.textContent = "一鍵複製核心腳本"; }, 2000);
+                const textEl = document.getElementById('secret-btn-text');
+                if(textEl) {
+                    textEl.textContent = "🎉 複製成功！快去新增瀏覽器書籤吧";
+                    textEl.classList.remove('text-slate-400');
+                    textEl.classList.add('text-emerald-400');
+                    
+                    // 兩秒後還原文字狀態
+                    setTimeout(() => {
+                        textEl.textContent = "點擊自動複製實境攔截碼";
+                        textEl.classList.remove('text-emerald-400');
+                        textEl.classList.add('text-slate-400');
+                    }, 3000);
                 }
             }).catch(function() {
-                alert("手機瀏覽器不支援自動複製，請改用電腦版或手動複製代碼。");
+                alert("手機不支援自動複製，請改用電腦版。");
             });
         }
     </script>

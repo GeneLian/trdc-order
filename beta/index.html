@@ -4,20 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TRDC 訂餐工具 v3.9-Modern</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- FontAwesome 圖標 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         touch-action: manipulation;
         /* 隱藏滾動條但保持功能 */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* 點擊放大菜單的擴充樣式 */
+        .zoom-expanded {
+            max-height: none !important;
+            width: 100% !important;
+            object-fit: contain !important;
+            cursor: zoom-out !important;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 flex flex-col justify-between min-h-screen font-sans overflow-x-hidden pt-[65px]">
 
-    <!-- 頂部標頭列 -->
     <header id="mainHeader" class="bg-white shadow-md border-b border-slate-100 py-3 px-4 fixed top-0 left-0 right-0 h-[65px] z-[100]">
         <div class="max-w-md mx-auto flex items-center justify-between h-full">
             <div class="flex items-center space-x-2">
@@ -33,7 +38,6 @@
                 </div>
             </div>
             
-            <!-- 【秘密彩蛋觸發區域】：結合原本的 liveClock 機制，並優化防放大 -->
             <div id="top-clock" style="touch-action: manipulation;" class="text-right flex items-center select-none active:scale-95 transition cursor-pointer">
                 <div id="liveClock" class="font-mono text-base font-black bg-slate-900 text-green-400 px-2.5 py-1 rounded-lg border border-slate-800 shadow-xl flex items-center space-x-1 tracking-wider">
                     <i class="fa-regular fa-clock text-xs text-red-500"></i>
@@ -43,11 +47,9 @@
         </div>
     </header>
 
-    <!-- 主選單內容區域 -->
     <main id="mainMenu" class="flex-grow flex items-center justify-center px-6 py-4">
         <div class="w-full max-w-md space-y-4">
             
-            <!-- 選項 1：看一下菜單 (修正呼叫 openMenu) -->
             <button onclick="openMenu()" class="w-full flex items-center justify-between p-4 bg-white border border-slate-100 rounded-3xl shadow-sm hover:bg-slate-50 active:scale-98 transition duration-150 text-left">
                 <div class="flex items-center space-x-4">
                     <div class="w-14 h-14 bg-gradient-to-br from-amber-50 to-orange-100/50 border border-amber-200/40 rounded-2xl flex items-center justify-center shadow-inner">
@@ -61,7 +63,6 @@
                 <i class="fa-solid fa-chevron-right text-slate-300 text-sm pr-2"></i>
             </button>
 
-            <!-- 選項 2：直接訂餐 (修正呼叫 openOrderModal) -->
             <button onclick="openOrderModal()" class="w-full flex items-center justify-between p-4 bg-white border border-slate-100 rounded-3xl shadow-sm hover:bg-slate-50 active:scale-98 transition duration-150 text-left">
                 <div class="flex items-center space-x-4">
                     <div class="w-14 h-14 bg-gradient-to-br from-emerald-50 to-teal-100/50 border border-emerald-200/40 rounded-2xl flex items-center justify-center shadow-inner">
@@ -75,7 +76,6 @@
                 <i class="fa-solid fa-chevron-right text-slate-300 text-sm pr-2"></i>
             </button>
 
-            <!-- 選項 3：看訂餐結果 (修正呼叫 loadIframe) -->
             <button onclick="loadIframe('https://app.inventec.com/iServicePWA/DaxiOrderMeal.html?rid=A0001')" class="w-full flex items-center justify-between p-4 bg-white border border-slate-100 rounded-3xl shadow-sm hover:bg-slate-50 active:scale-98 transition duration-150 text-left">
                 <div class="flex items-center space-x-4">
                     <div class="w-14 h-14 bg-gradient-to-br from-blue-50 to-indigo-100/50 border border-blue-200/40 rounded-2xl flex items-center justify-center shadow-inner">
@@ -89,7 +89,6 @@
                 <i class="fa-solid fa-chevron-right text-slate-300 text-sm pr-2"></i>
             </button>
 
-            <!-- ==================== ⚡ 隱藏彩蛋：第四個選項 (與新樣式完美融合) ⚡ ==================== -->
             <div id="secret-option-4" class="hidden opacity-0 transform translate-y-4 transition-all duration-500 bg-slate-900 border border-slate-800 rounded-3xl p-4 justify-between items-center shadow-lg shadow-red-900/20 hover:bg-slate-850 cursor-pointer" onclick="copyBookmarkletCode()">
                 <div class="flex items-center space-x-4">
                     <div class="w-14 h-14 bg-gradient-to-br from-red-950/40 to-red-900/20 border border-red-900/40 rounded-2xl flex items-center justify-center shadow-inner">
@@ -108,36 +107,37 @@
         </div>
     </main>
 
-    <!-- Iframe 容器畫面 -->
     <div id="iframeContainer" class="w-full flex-grow hidden bg-white">
         <iframe id="targetIframe" src="" class="w-full h-full border-none flex-grow" style="height: calc(100vh - 65px);"></iframe>
     </div>
 
-    <!-- 頁尾提示 -->
     <footer id="mainFooter" class="py-4 text-center text-xs text-slate-400">
         <p>請依規定的工作日天數選擇正確的日期</p>
     </footer>
 
-    <!-- 本周菜單彈窗 (Modal) -->
     <div id="menuModal" class="fixed inset-x-0 bottom-0 top-[65px] bg-slate-900/60 backdrop-blur-sm z-[90] hidden justify-center items-end sm:items-center p-4 transition-all duration-300 opacity-0">
-        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden transform translate-y-full sm:translate-y-0 transition-transform duration-300 flex flex-col max-h-[80vh]">
+        <div class="bg-white w-full max-w-md sm:max-w-2xl rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden transform translate-y-full sm:translate-y-0 transition-transform duration-300 flex flex-col max-h-[85vh]">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <h3 class="font-bold text-slate-800 text-lg flex items-center">
-                    <i class="fa-solid fa-image text-amber-500 mr-2"></i>本周菜單
-                </h3>
+                <div class="flex flex-col">
+                    <h3 class="font-bold text-slate-800 text-lg flex items-center">
+                        <i class="fa-solid fa-image text-amber-500 mr-2"></i>本周菜單
+                    </h3>
+                    <span class="text-[10px] text-slate-400 font-medium sm:block hidden mt-0.5">💡 電腦版可點擊圖片切換超大高清模式，或使用滑鼠滾輪觀看</span>
+                </div>
                 <button onclick="closeMenu(false)" class="text-slate-400 hover:text-slate-600 p-1">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
-            <div class="flex-grow overflow-y-auto p-4 flex flex-col justify-center items-center bg-slate-100 min-h-[250px] relative">
+            <div class="flex-grow overflow-y-auto p-4 flex flex-col items-center bg-slate-100 min-h-[300px] relative">
                 <div id="imageLoader" class="absolute inset-0 flex flex-col justify-center items-center bg-slate-100 space-y-2 z-10">
                     <i class="fa-solid fa-circle-notch fa-spin text-3xl text-blue-500"></i>
                     <p class="text-xs text-slate-500">菜單圖片載入中...</p>
                 </div>
                 <img id="menuImage" src="https://drive.google.com/thumbnail?sz=w1000&id=1BVJimgGuLN1J5GYFeayJQOg-0fj816Ku" 
                      alt="TRDC 菜單" 
-                     class="max-w-full max-h-[45vh] object-contain rounded-lg shadow-sm z-20 transition-opacity duration-300 opacity-0"
-                     onload="handleImageLoaded()">
+                     class="max-w-full max-h-[45vh] sm:max-h-[55vh] object-contain rounded-lg shadow-sm z-20 transition-all duration-300 opacity-0 cursor-zoom-in"
+                     onload="handleImageLoaded()"
+                     onclick="toggleZoomImage(this)">
             </div>
             <div class="p-5 border-t border-slate-100 bg-white flex space-x-3">
                 <button onclick="closeMenu(false)" class="flex-1 py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-xl transition">
@@ -150,7 +150,6 @@
         </div>
     </div>
 
-    <!-- 選擇日期彈窗 (Modal) -->
     <div id="orderModal" class="fixed inset-x-0 bottom-0 top-[65px] bg-slate-900/60 backdrop-blur-sm z-[90] hidden justify-center items-end sm:items-center p-4 transition-all duration-300 opacity-0">
         <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden transform translate-y-full sm:translate-y-0 transition-transform duration-300 flex flex-col">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
@@ -179,7 +178,6 @@
         </div>
     </div>
 
-    <!-- ==================== JavaScript 邏輯控制區 ==================== -->
     <script>
         const menuModal = document.getElementById('menuModal');
         const menuModalContent = menuModal.querySelector('.transform');
@@ -197,7 +195,7 @@
         const targetIframe = document.getElementById('targetIframe');
         const backBtn = document.getElementById('backBtn');
 
-        // --- 0. 精準電子時鐘邏輯 (HH:mm:ss) ---
+        // --- 0. 精準電子時鐘邏輯 ---
         function updateClock() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -224,7 +222,6 @@
             targetIframe.src = url;
         }
 
-        // 修正原本返回選單功能
         function backToMenu() {
             iframeContainer.classList.add('hidden');
             backBtn.classList.add('hidden');
@@ -233,7 +230,7 @@
             mainFooter.classList.remove('hidden');
         }
 
-        // --- 2. 菜單彈窗控制 ---
+        // --- 2. 菜單彈窗與點擊放大功能控制 ---
         function openMenu() {
             menuModal.classList.remove('hidden');
             menuModal.classList.add('flex');
@@ -248,7 +245,23 @@
             menuImage.classList.remove('opacity-0');
         }
 
+        // 新增點擊切換超大圖檢視機制
+        function toggleZoomImage(imgElement) {
+            if (imgElement.classList.contains('zoom-expanded')) {
+                imgElement.classList.remove('zoom-expanded');
+                imgElement.classList.add('cursor-zoom-in');
+            } else {
+                imgElement.classList.add('zoom-expanded');
+                imgElement.classList.remove('cursor-zoom-in');
+            }
+        }
+
         function closeMenu(goToOrder = false) {
+            // 關閉時自動還原縮放狀態
+            if (menuImage) {
+                menuImage.classList.remove('zoom-expanded');
+                menuImage.classList.add('cursor-zoom-in');
+            }
             menuModal.classList.remove('opacity-100');
             menuModalContent.classList.add('translate-y-full');
             setTimeout(() => {
@@ -289,13 +302,13 @@
             loadIframe(targetUrl);
         }
 
-        // --- 4. 【極速時鐘彩蛋監聽】：優化防放大，完美綁定原本的 liveClock 外框 ---
+        // --- 4. 【極速時鐘彩蛋監聽】 ---
         let trdcClickTimestamps = [];
         const clockTarget = document.getElementById('top-clock');
 
         if (clockTarget) {
             clockTarget.addEventListener('touchend', (e) => {
-                e.preventDefault(); // 核心防禦：阻斷 iOS 雙擊放大畫面機制
+                e.preventDefault(); 
                 const now = Date.now();
                 trdcClickTimestamps.push(now);
                 if (trdcClickTimestamps.length > 6) trdcClickTimestamps.shift();
@@ -306,7 +319,7 @@
             });
 
             clockTarget.addEventListener('click', (e) => {
-                if (e.screenX === 0 && e.screenY === 0) return; // 避免手機重複計算
+                if (e.screenX === 0 && e.screenY === 0) return; 
                 const now = Date.now();
                 trdcClickTimestamps.push(now);
                 if (trdcClickTimestamps.length > 6) trdcClickTimestamps.shift();

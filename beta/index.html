@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TRDC 訂餐工具 v4.0.1-Modern</title>
+    <title>TRDC 訂餐工具 v4.0.3-IframeLogin</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- FontAwesome 圖標 -->
@@ -28,18 +28,28 @@
 </head>
 <body class="bg-slate-50 text-slate-800 flex flex-col justify-between min-h-screen font-sans overflow-x-hidden pt-[65px]">
 
-    <!-- 迎賓登入閘門 (蓋住全螢幕) -->
-    <div id="welcomeOverlay" class="fixed inset-0 bg-slate-900 z-[200] flex flex-col items-center justify-center p-6 transition-opacity duration-500">
-        <div class="bg-slate-800 p-8 rounded-3xl shadow-2xl text-center max-w-sm w-full border border-slate-700">
-            <div class="w-20 h-20 bg-blue-600/20 text-blue-400 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner">
-                <i class="fa-solid fa-shield-halved text-4xl"></i>
+    <!-- 迎賓登入閘門 (內嵌 iService 登入 Iframe) -->
+    <div id="welcomeOverlay" class="fixed inset-0 bg-slate-900 z-[200] flex flex-col justify-between transition-opacity duration-500">
+        <!-- 頂部提示與解鎖按鈕列 -->
+        <div class="bg-slate-800 px-4 py-3 border-b border-slate-700 flex items-center justify-between shadow-md shrink-0">
+            <div class="flex items-center space-x-2 text-white">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-sm shadow">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                    <h2 class="text-sm font-bold leading-tight">iService 登入閘門</h2>
+                    <p class="text-[10px] text-slate-400">請於下方視窗完成登入，或直接切回工具</p>
+                </div>
             </div>
-            <h2 class="text-2xl font-bold text-white mb-2">歡迎使用 TRDC 工具</h2>
-            <p class="text-slate-400 text-sm mb-8">為確保各項功能正常運作，<br>請先進行身分驗證。</p>
-            <button onclick="unlockApp()" class="w-full py-4 px-6 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-bold rounded-xl transition shadow-lg shadow-blue-900/50 flex items-center justify-center space-x-3">
-                <span>前往登入 iService</span>
-                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            <button onclick="unlockApp()" class="py-2 px-4 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-xs rounded-xl transition shadow flex items-center space-x-2 shrink-0">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>✅ 我已登入完成，進入選單</span>
             </button>
+        </div>
+
+        <!-- 內嵌登入頁面 Iframe -->
+        <div class="flex-grow w-full bg-white relative">
+            <iframe src="https://app.inventec.com/iServicePWA/" class="w-full h-full border-none"></iframe>
         </div>
     </div>
 
@@ -55,7 +65,7 @@
                 </div>
                 <div>
                     <h1 class="text-base font-bold tracking-tight whitespace-nowrap">TRDC 訂餐工具</h1>
-                    <p class="text-[10px] text-slate-400 whitespace-nowrap">網頁快捷版 v4.0.1</p>
+                    <p class="text-[10px] text-slate-400 whitespace-nowrap">網頁快捷版 v4.0.3</p>
                 </div>
             </div>
             
@@ -73,6 +83,17 @@
     <main id="mainMenu" class="flex-grow flex items-center justify-center px-4 md:px-8 py-6">
         <div class="w-full max-w-md md:max-w-4xl space-y-6">
             
+            <!-- 登入成功狀態提示 -->
+            <div id="loginSuccessNotice" class="hidden bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-2xl flex items-center justify-between text-sm shadow-sm animate-fade-in">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+                    <span>身分驗證完成！請點選下方選單開始訂餐。</span>
+                </div>
+                <button onclick="document.getElementById('loginSuccessNotice').remove()" class="text-emerald-500 hover:text-emerald-700">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
             <!-- 選項 1：看一下菜單 -->
             <button onclick="openMenu()" class="w-full flex items-center justify-between p-6 md:p-8 bg-white border border-slate-100 rounded-3xl shadow-sm hover:shadow-md hover:bg-slate-50 active:scale-98 transition duration-150 text-left">
                 <div class="flex items-center space-x-6">
@@ -417,7 +438,7 @@
 
         // --- 6. 點擊自動複製功能 ---
         function copyBookmarkletCode() {
-            var code = "javascript:(function(){if(window.trdc_robot_running){alert('🤖 運作中');return;}window.trdc_robot_running=true;var selectedElements=[];var panel=document.createElement('div');panel.style.cssText='position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:999999;background:black;color:white;padding:12px;border-radius:16px;text-align:center;width:85%;max-width:320px;border:2px solid red;';panel.innerHTML='<div style=\"font-weight:bold;color:red;font-size:14px;\">🤖 TRDC 實境模式 (v6.1)</div><div id=\"status\" style=\"font-size:12px;color:gray;margin:6px 0;\">請依序點擊 1~3 個餐點時段</div><button id=\"lockbtn\" style=\"width:100%;background:red;color:white;border:none;padding:6px;border-radius:8px;font-weight:bold;\">🔒 鎖定配置</button>';document.body.appendChild(panel);var statusDiv=document.getElementById('status');var lockBtn=document.getElementById('lockbtn');function refreshBadges(){selectedElements.forEach(function(el,idx){var badge=el.querySelector('.t-num');if(!badge){badge=document.createElement('span');badge.className='t-num';badge.style.cssText='position:absolute;top:-4px;right:-4px;background:red;color:white;font-size:10px;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;z-index:9999;';el.appendChild(badge);}badge.textContent=idx+1;el.style.outline='3px solid red';el.style.position='relative';});if(statusDiv)statusDiv.textContent='已選: '+selectedElements.length+' 個時段';}function clickHandler(e){if(this.id==='lockbtn'||this.closest('#lockbtn'))return;e.preventDefault();e.stopPropagation();var foundIdx=selectedElements.indexOf(this);if(foundIdx>-1){var badge=this.querySelector('.t-num');if(badge)badge.remove();this.style.outline='none';selectedElements.splice(foundIdx,1);refreshBadges();}else{if(selectedElements.length>=3){alert('最多只能選 3 個備案喔！');return;}selectedElements.push(this);refreshBadges();}}var allButtons=document.querySelectorAll('button, .time-grid, [class*=\"btn\"], [class*=\"item\"]');allButtons.forEach(function(btn){btn.addEventListener('click',clickHandler,true);});lockBtn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();if(selectedElements.length===0){alert('請至少選一個');return;}allButtons.forEach(function(btn){btn.removeEventListener('click',clickHandler,true);});statusDiv.innerHTML='🔒 優先度已鎖定！等待20:00...';lockBtn.style.display='none';var targetTexts=selectedElements.map(function(el){return(el.innerText||el.textContent||\"\").trim().replace(/\\s+/g,\' \');});var launchTimer=setInterval(function(){var btns=Array.from(document.querySelectorAll('button, .time-grid, [class*=\"btn\"], [class*=\"item\"]'));for(var i=0;i<targetTexts.length;i++){var targetText=targetTexts[i];var targetBtn=btns.find(function(b){var t=(b.innerText||b.textContent||\"\").trim().replace(/\\s+/g,\' \');return b.id!=='lockbtn'&&!b.closest('#lockbtn')&&t.indexOf(targetText)>-1&&!b.disabled&&t.indexOf('售罄')===-1;});if(targetBtn){clearInterval(launchTimer);targetBtn.click();setTimeout(function(){var subBtn=Array.from(document.querySelectorAll('button, a')).find(function(b){var t=(b.innerText||b.textContent||\"\").trim();return t.id!=='lockbtn'&&!b.closest('#lockbtn')&&(t.indexOf('確認')>-1||t.indexOf('訂餐')>-1||t.indexOf('送出')>-1);});if(subBtn)subBtn.click();statusDiv.textContent='🎉 已自動秒殺送出！';window.trdc_robot_running=false;},50);return;}}},100);});})();";
+            var code = "javascript:(function(){if(window.trdc_robot_running){alert('🤖 運作中');return;}window.trdc_robot_running=true;var selectedElements=[];var panel=document.createElement('div');panel.style.cssText='position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:999999;background:black;color:white;padding:12px;border-radius:16px;text-align:center;width:85%;max-width:320px;border:2px solid red;';panel.innerHTML='<div style="font-weight:bold;color:red;font-size:14px;">🤖 TRDC 實境模式 (v6.1)</div><div id="status" style="font-size:12px;color:gray;margin:6px 0;">請依序點擊 1~3 個餐點時段</div><button id="lockbtn" style="width:100%;background:red;color:white;border:none;padding:6px;border-radius:8px;font-weight:bold;">🔒 鎖定配置</button>';document.body.appendChild(panel);var statusDiv=document.getElementById('status');var lockBtn=document.getElementById('lockbtn');function refreshBadges(){selectedElements.forEach(function(el,idx){var badge=el.querySelector('.t-num');if(!badge){badge=document.createElement('span');badge.className='t-num';badge.style.cssText='position:absolute;top:-4px;right:-4px;background:red;color:white;font-size:10px;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;z-index:9999;';el.appendChild(badge);}badge.textContent=idx+1;el.style.outline='3px solid red';el.style.position='relative';});if(statusDiv)statusDiv.textContent='已選: '+selectedElements.length+' 個時段';}function clickHandler(e){if(this.id==='lockbtn'||this.closest('#lockbtn'))return;e.preventDefault();e.stopPropagation();var foundIdx=selectedElements.indexOf(this);if(foundIdx>-1){var badge=this.querySelector('.t-num');if(badge)badge.remove();this.style.outline='none';selectedElements.splice(foundIdx,1);refreshBadges();}else{if(selectedElements.length>=3){alert('最多只能選 3 個備案喔！');return;}selectedElements.push(this);refreshBadges();}}var allButtons=document.querySelectorAll('button, .time-grid, [class*="btn"], [class*="item"]');allButtons.forEach(function(btn){btn.addEventListener('click',clickHandler,true);});lockBtn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();if(selectedElements.length===0){alert('請至少選一個');return;}allButtons.forEach(function(btn){btn.removeEventListener('click',clickHandler,true);});statusDiv.innerHTML='🔒 優先度已鎖定！等待20:00...';lockBtn.style.display='none';var targetTexts=selectedElements.map(function(el){return(el.innerText||el.textContent||"").trim().replace(/\s+/g,' ');});var launchTimer=setInterval(function(){var btns=Array.from(document.querySelectorAll('button, .time-grid, [class*="btn"], [class*="item"]'));for(var i=0;i<targetTexts.length;i++){var targetText=targetTexts[i];var targetBtn=btns.find(function(b){var t=(b.innerText||b.textContent||"").trim().replace(/\s+/g,' ');return b.id!=='lockbtn'&&!b.closest('#lockbtn')&&t.indexOf(targetText)>-1&&!b.disabled&&t.indexOf('售罄')===-1;});if(targetBtn){clearInterval(launchTimer);targetBtn.click();setTimeout(function(){var subBtn=Array.from(document.querySelectorAll('button, a')).find(function(b){var t=(b.innerText||b.textContent||"").trim();return t.id!=='lockbtn'&&!b.closest('#lockbtn')&&(t.indexOf('確認')>-1||t.indexOf('訂餐')>-1||t.indexOf('送出')>-1);});if(subBtn)subBtn.click();statusDiv.textContent='🎉 已自動秒殺送出！';window.trdc_robot_running=false;},50);return;}}},100);});})();";
             
             navigator.clipboard.writeText(code).then(function() {
                 const textEl = document.getElementById('secret-btn-text');
@@ -437,16 +458,15 @@
             });
         }
 
-        // --- 7. 迎賓登入閘門解鎖 ---
+        // --- 7. 內嵌 Iframe 閘門解鎖 ---
         function unlockApp() {
-            // 1. 打開官方網頁讓使用者登入 (跳出新分頁)
-            window.open('https://app.inventec.com/iServicePWA/', '_blank');
-            
-            // 2. 解鎖工具主畫面 (淡出動畫)
             const overlay = document.getElementById('welcomeOverlay');
             overlay.classList.add('opacity-0');
             
-            // 3. 等待淡出動畫結束後徹底隱藏
+            // 顯示綠色登入完成提示
+            const notice = document.getElementById('loginSuccessNotice');
+            if (notice) notice.classList.remove('hidden');
+
             setTimeout(() => {
                 overlay.classList.add('hidden');
             }, 500);

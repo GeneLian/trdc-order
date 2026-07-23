@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TRDC 訂餐工具 v4.2.0</title>
+    <title>TRDC 訂餐工具 v4.2.1</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- FontAwesome 圖標 -->
@@ -39,13 +39,13 @@
             </div>
             <div>
                 <h1 class="text-base font-bold tracking-tight whitespace-nowrap">TRDC 訂餐工具</h1>
-                <p class="text-[10px] text-slate-400 whitespace-nowrap">網頁快捷版 v4.2.0</p>
+                <p class="text-[10px] text-slate-400 whitespace-nowrap">網頁快捷版 v4.2.1</p>
             </div>
         </div>
         
-        <!-- 右側時鐘 -->
+        <!-- 右側時鐘 (維持原本較大、醒目的正確尺寸) -->
         <div class="flex items-center space-x-2">
-            <div id="liveClock" class="font-mono text-xs md:text-sm font-black bg-slate-900 text-green-400 px-3 py-1.5 rounded-xl border border-slate-800 shadow-lg flex items-center space-x-1.5 tracking-wider">
+            <div id="liveClock" class="font-mono text-sm md:text-base font-bold bg-slate-900 text-green-400 px-3 py-1.5 rounded-2xl border border-slate-800 shadow-lg flex items-center space-x-1.5 tracking-wider">
                 <i class="fa-regular fa-clock text-xs text-red-500"></i>
                 <span>00:00:00</span>
             </div>
@@ -54,7 +54,7 @@
 
     <!-- 主選單內容區域 -->
     <main id="mainMenu" class="flex-grow flex items-center justify-center px-4 md:px-8 py-6">
-        <!-- 未登入時的「預先登入」按鈕畫面（對應圖三） -->
+        <!-- 未登入時的「預先登入」按鈕畫面 -->
         <div id="loginPromptCard" class="w-full max-w-md bg-white border border-slate-200 rounded-3xl p-8 text-center shadow-sm space-y-6">
             <button onclick="openLoginIframe()" class="w-full group bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-98 text-white p-6 rounded-2xl shadow-lg shadow-blue-200 transition duration-150 flex items-center justify-center space-x-3 cursor-pointer select-none">
                 <div class="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center text-xl">
@@ -65,7 +65,7 @@
             <p class="text-sm font-semibold text-slate-500">請先完成身分驗證</p>
         </div>
 
-        <!-- 登入後才會顯示的工具選單（對應圖五） -->
+        <!-- 登入後才會顯示的工具選單 -->
         <div id="menuOptionsContainer" class="w-full max-w-md md:max-w-4xl space-y-6 hidden">
             
             <!-- 選項 1：看一下菜單 -->
@@ -113,7 +113,7 @@
         </div>
     </main>
 
-    <!-- Iframe 容器畫面 (點選登入或功能後展現) -->
+    <!-- Iframe 容器畫面 -->
     <div id="iframeContainer" class="w-full flex-grow hidden bg-white">
         <iframe id="targetIframe" src="" class="w-full h-full border-none flex-grow" style="height: calc(100vh - 75px);"></iframe>
     </div>
@@ -211,7 +211,7 @@
         const loginPromptCard = document.getElementById('loginPromptCard');
         const menuOptionsContainer = document.getElementById('menuOptionsContainer');
 
-        let isUserLoggedIn = false; // 追蹤登入狀態
+        let isUserLoggedIn = false;
 
         // --- 0. 電子時鐘邏輯 ---
         function updateClock() {
@@ -233,9 +233,8 @@
 
         // --- 1. 點擊「預先登入」開啟登入頁面 ---
         function openLoginIframe() {
-            // 點擊預先登入後導向登入頁面 (帶入 iService 登入網址)
             loadIframe('https://app.inventec.com/iServicePWA/DaxiOrderMeal.html?rid=A0001');
-            isUserLoggedIn = true; // 標記已進行過登入流程
+            isUserLoggedIn = true;
         }
 
         // --- 2. 子母畫面切換核心 ---
@@ -254,7 +253,6 @@
             targetIframe.src = ""; 
             
             if (isUserLoggedIn) {
-                // 如果是從登入頁返回，切換成顯示工具選單（圖五）
                 loginPromptCard.classList.add('hidden');
                 menuOptionsContainer.classList.remove('hidden');
             }

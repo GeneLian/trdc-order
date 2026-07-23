@@ -1,1 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TRDC 訂餐工具 - 活力普普風</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        html, body { touch-action: manipulation; background-color: #fffbeb; color: #1e293b; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .pop-shadow { box-shadow: 4px 4px 0px #1e293b; }
+        .pop-shadow-sm { box-shadow: 2px 2px 0px #1e293b; }
+    </style>
+</head>
+<body class="flex flex-col justify-between min-h-screen font-sans overflow-x-hidden pt-[75px]">
 
+    <header class="bg-amber-300 border-b-4 border-slate-900 py-3 px-4 fixed top-0 left-0 right-0 h-[75px] z-[100] flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <button id="backBtn" onclick="backToMenu()" class="hidden mr-2 p-2 bg-white border-2 border-slate-900 pop-shadow-sm rounded-xl transition active:translate-y-0.5">
+                <i class="fa-solid fa-arrow-left text-slate-900"></i>
+            </button>
+            <div class="bg-rose-500 border-2 border-slate-900 pop-shadow-sm text-white w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-utensils text-sm"></i>
+            </div>
+            <div>
+                <h1 class="text-base font-black tracking-tight text-slate-900 whitespace-nowrap">TRDC 訂餐工具</h1>
+                <p class="text-[10px] font-bold text-slate-700 whitespace-nowrap">POP ART v4.2.1</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-2">
+            <div id="liveClock" class="font-mono text-sm md:text-base font-black bg-white border-2 border-slate-900 pop-shadow-sm text-rose-600 px-3 py-1.5 rounded-2xl flex items-center space-x-1.5">
+                <i class="fa-regular fa-clock text-xs text-amber-500"></i>
+                <span>00:00:00</span>
+            </div>
+        </div>
+    </header>
+
+    <main id="mainMenu" class="flex-grow flex items-center justify-center px-4 md:px-8 py-6">
+        <div id="loginPromptCard" class="w-full max-w-md bg-white border-4 border-slate-900 rounded-3xl p-8 text-center pop-shadow space-y-6">
+            <button onclick="openLoginIframe()" class="w-full bg-cyan-400 hover:bg-cyan-300 border-4 border-slate-900 pop-shadow active:translate-y-1 text-slate-900 p-6 rounded-2xl transition duration-150 flex items-center justify-center space-x-3 cursor-pointer select-none">
+                <div class="w-12 h-12 bg-white border-2 border-slate-900 rounded-xl flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-lock-open text-slate-900"></i>
+                </div>
+                <span class="text-2xl font-black tracking-wider">預先登入</span>
+            </button>
+            <p class="text-sm font-bold text-slate-700">請先完成身分驗證</p>
+        </div>
+    </main>
+</body>
+</html>

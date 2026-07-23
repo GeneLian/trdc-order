@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TRDC 訂餐工具 v4.2.1</title>
+    <title>TRDC 訂餐工具 v4.2.1 - 活力普普風</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- FontAwesome 圖標 -->
@@ -11,6 +11,8 @@
     <style>
         html, body {
             touch-action: manipulation;
+            background-color: #fffbeb; /* 溫暖的淺黃色背景 */
+            color: #1e293b;
         }
         
         /* 隱藏滾動條 */
@@ -24,29 +26,43 @@
             width: 150% !important;
             transition: width 0.25s ease;
         }
+
+        /* 普普風粗邊框與厚重陰影 */
+        .pop-box {
+            border: 4px solid #1e293b;
+            box-shadow: 4px 4px 0px #1e293b;
+        }
+        .pop-box-sm {
+            border: 2px solid #1e293b;
+            box-shadow: 2px 2px 0px #1e293b;
+        }
+        .pop-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #1e293b !important;
+        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 flex flex-col justify-between min-h-screen font-sans overflow-x-hidden pt-[75px]">
+<body class="text-slate-800 flex flex-col justify-between min-h-screen font-sans overflow-x-hidden pt-[75px]">
 
     <!-- 頂部標頭列 -->
-    <header id="mainHeader" class="bg-white shadow-md border-b border-slate-100 py-3 px-4 fixed top-0 left-0 right-0 h-[75px] z-[100] flex items-center justify-between">
+    <header id="mainHeader" class="bg-amber-300 border-b-4 border-slate-900 py-3 px-4 fixed top-0 left-0 right-0 h-[75px] z-[100] flex items-center justify-between">
         <div class="flex items-center space-x-3">
-            <button id="backBtn" onclick="backToMenu()" class="hidden mr-2 p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl transition">
-                <i class="fa-solid fa-arrow-left"></i>
+            <button id="backBtn" onclick="backToMenu()" class="hidden mr-2 p-2 bg-white pop-box-sm rounded-xl transition cursor-pointer">
+                <i class="fa-solid fa-arrow-left text-slate-900"></i>
             </button>
-            <div class="bg-blue-600 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md shadow-blue-200 shrink-0">
+            <div class="bg-rose-500 border-2 border-slate-900 pop-box-sm text-white w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
                 <i class="fa-solid fa-utensils text-sm"></i>
             </div>
             <div>
-                <h1 class="text-base font-bold tracking-tight whitespace-nowrap">TRDC 訂餐工具</h1>
-                <p class="text-[10px] text-slate-400 whitespace-nowrap">網頁快捷版 v4.2.1</p>
+                <h1 class="text-base font-black tracking-tight text-slate-900 whitespace-nowrap">TRDC 訂餐工具</h1>
+                <p class="text-[10px] font-bold text-slate-700 whitespace-nowrap">網頁快捷版 v4.2.1</p>
             </div>
         </div>
         
-        <!-- 右側時鐘 (維持原本較大、醒目的正確尺寸) -->
+        <!-- 右側時鐘 (普普風醒目大時鐘) -->
         <div class="flex items-center space-x-2">
-            <div id="liveClock" class="font-mono text-sm md:text-base font-bold bg-slate-900 text-green-400 px-3 py-1.5 rounded-2xl border border-slate-800 shadow-lg flex items-center space-x-1.5 tracking-wider">
-                <i class="fa-regular fa-clock text-xs text-red-500"></i>
+            <div id="liveClock" class="font-mono text-sm md:text-base font-black bg-white border-2 border-slate-900 pop-box-sm text-rose-600 px-3 py-1.5 rounded-2xl flex items-center space-x-1.5 tracking-wider">
+                <i class="fa-regular fa-clock text-xs text-amber-500"></i>
                 <span>00:00:00</span>
             </div>
         </div>
@@ -55,59 +71,59 @@
     <!-- 主選單內容區域 -->
     <main id="mainMenu" class="flex-grow flex items-center justify-center px-4 md:px-8 py-6">
         <!-- 未登入時的「預先登入」按鈕畫面 -->
-        <div id="loginPromptCard" class="w-full max-w-md bg-white border border-slate-200 rounded-3xl p-8 text-center shadow-sm space-y-6">
-            <button onclick="openLoginIframe()" class="w-full group bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-98 text-white p-6 rounded-2xl shadow-lg shadow-blue-200 transition duration-150 flex items-center justify-center space-x-3 cursor-pointer select-none">
-                <div class="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center text-xl">
-                    <i class="fa-solid fa-lock-open text-white"></i>
+        <div id="loginPromptCard" class="w-full max-w-md bg-white pop-box rounded-3xl p-8 text-center space-y-6">
+            <button onclick="openLoginIframe()" class="w-full bg-cyan-400 hover:bg-cyan-300 pop-btn pop-box text-slate-900 p-6 rounded-2xl transition duration-150 flex items-center justify-center space-x-3 cursor-pointer select-none">
+                <div class="w-12 h-12 bg-white border-2 border-slate-900 rounded-xl flex items-center justify-center text-xl shadow-inner">
+                    <i class="fa-solid fa-lock-open text-slate-900"></i>
                 </div>
-                <span class="text-2xl font-bold tracking-wider">預先登入</span>
+                <span class="text-2xl font-black tracking-wider">預先登入</span>
             </button>
-            <p class="text-sm font-semibold text-slate-500">請先完成身分驗證</p>
+            <p class="text-sm font-bold text-slate-700">請先完成身分驗證</p>
         </div>
 
         <!-- 登入後才會顯示的工具選單 -->
         <div id="menuOptionsContainer" class="w-full max-w-md md:max-w-4xl space-y-6 hidden">
             
             <!-- 選項 1：看一下菜單 -->
-            <button onclick="openMenu()" class="w-full flex items-center justify-between p-6 md:p-8 bg-white border border-slate-100 rounded-3xl shadow-sm hover:shadow-md hover:bg-slate-50 active:scale-98 transition duration-150 text-left">
+            <button onclick="openMenu()" class="w-full flex items-center justify-between p-6 md:p-8 bg-white pop-box hover:bg-amber-50 pop-btn rounded-3xl transition duration-150 text-left cursor-pointer">
                 <div class="flex items-center space-x-6">
-                    <div class="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-amber-50 to-orange-100/50 border border-amber-200/40 rounded-2xl flex items-center justify-center shadow-inner shrink-0">
+                    <div class="w-16 h-16 md:w-20 md:h-20 bg-amber-100 border-2 border-slate-900 rounded-2xl flex items-center justify-center shrink-0">
                         <i class="fa-solid fa-file-lines text-2xl md:text-3xl text-orange-600"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-slate-800 text-lg md:text-xl">1. 看一下菜單 🤔</h3>
-                        <p class="text-xs md:text-base font-semibold text-slate-400 mt-1">查看本周最新菜單圖片</p>
+                        <h3 class="font-black text-slate-900 text-lg md:text-xl">1. 看一下菜單 🤔</h3>
+                        <p class="text-xs md:text-base font-bold text-slate-500 mt-1">查看本周最新菜單圖片</p>
                     </div>
                 </div>
-                <i class="fa-solid fa-chevron-right text-slate-300 text-base md:text-lg pr-2"></i>
+                <i class="fa-solid fa-chevron-right text-slate-900 text-base md:text-lg pr-2"></i>
             </button>
 
             <!-- 選項 2：直接訂餐 -->
-            <button onclick="openOrderModal()" class="w-full flex items-center justify-between p-6 md:p-8 bg-white border border-slate-100 rounded-3xl shadow-sm hover:shadow-md hover:bg-slate-50 active:scale-98 transition duration-150 text-left">
+            <button onclick="openOrderModal()" class="w-full flex items-center justify-between p-6 md:p-8 bg-white pop-box hover:bg-emerald-50 pop-btn rounded-3xl transition duration-150 text-left cursor-pointer">
                 <div class="flex items-center space-x-6">
-                    <div class="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-emerald-50 to-teal-100/50 border border-emerald-200/40 rounded-2xl flex items-center justify-center shadow-inner shrink-0">
+                    <div class="w-16 h-16 md:w-20 md:h-20 bg-emerald-100 border-2 border-slate-900 rounded-2xl flex items-center justify-center shrink-0">
                         <i class="fa-solid fa-calendar-check text-2xl md:text-3xl text-emerald-600"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-slate-800 text-lg md:text-xl">2. 直接訂餐 🤤</h3>
-                        <p class="text-xs md:text-base font-semibold text-slate-400 mt-1">選擇日期並開啟訂餐系統</p>
+                        <h3 class="font-black text-slate-900 text-lg md:text-xl">2. 直接訂餐 🤤</h3>
+                        <p class="text-xs md:text-base font-bold text-slate-500 mt-1">選擇日期並開啟訂餐系統</p>
                     </div>
                 </div>
-                <i class="fa-solid fa-chevron-right text-slate-300 text-base md:text-lg pr-2"></i>
+                <i class="fa-solid fa-chevron-right text-slate-900 text-base md:text-lg pr-2"></i>
             </button>
 
             <!-- 選項 3：看訂餐結果 -->
-            <button onclick="loadIframe('https://app.inventec.com/iServicePWA/DaxiOrderMeal.html?rid=A0001')" class="w-full flex items-center justify-between p-6 md:p-8 bg-white border border-slate-100 rounded-3xl shadow-sm hover:shadow-md hover:bg-slate-50 active:scale-98 transition duration-150 text-left">
+            <button onclick="loadIframe('https://app.inventec.com/iServicePWA/DaxiOrderMeal.html?rid=A0001')" class="w-full flex items-center justify-between p-6 md:p-8 bg-white pop-box hover:bg-blue-50 pop-btn rounded-3xl transition duration-150 text-left cursor-pointer">
                 <div class="flex items-center space-x-6">
-                    <div class="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-50 to-indigo-100/50 border border-blue-200/40 rounded-2xl flex items-center justify-center shadow-inner shrink-0">
+                    <div class="w-16 h-16 md:w-20 md:h-20 bg-blue-100 border-2 border-slate-900 rounded-2xl flex items-center justify-center shrink-0">
                         <i class="fa-solid fa-qrcode text-2xl md:text-3xl text-blue-600"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-slate-800 text-lg md:text-xl">3. 看訂餐結果 & QRCode</h3>
-                        <p class="text-xs md:text-base font-semibold text-slate-400 mt-1">查詢紀錄並出示取餐碼</p>
+                        <h3 class="font-black text-slate-900 text-lg md:text-xl">3. 看訂餐結果 & QRCode</h3>
+                        <p class="text-xs md:text-base font-bold text-slate-500 mt-1">查詢紀錄並出示取餐碼</p>
                     </div>
                 </div>
-                <i class="fa-solid fa-chevron-right text-slate-300 text-base md:text-lg pr-2"></i>
+                <i class="fa-solid fa-chevron-right text-slate-900 text-base md:text-lg pr-2"></i>
             </button>
 
         </div>
@@ -119,29 +135,29 @@
     </div>
 
     <!-- 頁尾提示 -->
-    <footer id="mainFooter" class="py-4 text-center text-xs text-slate-400">
+    <footer id="mainFooter" class="py-4 text-center text-xs font-bold text-slate-600">
         <p>請依規定的工作日天數選擇正確的日期</p>
     </footer>
 
     <!-- 本周菜單彈窗 -->
     <div id="menuModal" class="fixed inset-x-0 bottom-0 top-[75px] bg-slate-900/70 backdrop-blur-sm z-[90] hidden justify-center items-center p-1 md:p-3 transition-all duration-300 opacity-0">
-        <div class="bg-white w-[98vw] md:w-[96vw] h-[calc(100vh-85px)] rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden transform translate-y-full md:translate-y-0 transition-transform duration-300 flex flex-col">
-            <div class="px-6 py-3 border-b border-slate-100 flex justify-between items-center bg-slate-50 select-none shrink-0">
+        <div class="bg-white w-[98vw] md:w-[96vw] h-[calc(100vh-85px)] pop-box rounded-2xl md:rounded-3xl overflow-hidden transform translate-y-full md:translate-y-0 transition-transform duration-300 flex flex-col">
+            <div class="px-6 py-3 border-b-4 border-slate-900 flex justify-between items-center bg-amber-200 select-none shrink-0">
                 <div class="flex flex-col">
-                    <h3 class="font-bold text-slate-800 text-lg flex items-center">
-                        <i class="fa-solid fa-image text-amber-500 mr-2"></i>本周菜單
+                    <h3 class="font-black text-slate-900 text-lg flex items-center">
+                        <i class="fa-solid fa-image text-orange-600 mr-2"></i>本周菜單
                     </h3>
-                    <span class="text-[11px] text-slate-400 font-medium">💡 可鼠標拖曳或點擊放大</span>
+                    <span class="text-[11px] font-bold text-slate-700">💡 可鼠標拖曳或點擊放大</span>
                 </div>
-                <button onclick="closeMenu(false)" class="text-slate-400 hover:text-slate-600 p-2">
-                    <i class="fa-solid fa-xmark text-2xl"></i>
+                <button onclick="closeMenu(false)" class="text-slate-900 hover:text-rose-600 p-2 cursor-pointer">
+                    <i class="fa-solid fa-xmark text-2xl font-black"></i>
                 </button>
             </div>
             
-            <div id="dragContainer" class="flex-grow overflow-auto no-scrollbar p-2 md:p-4 bg-slate-100 relative cursor-grab select-none flex items-start justify-center">
-                <div id="imageLoader" class="absolute inset-0 flex flex-col justify-center items-center bg-slate-100 space-y-2 z-10">
-                    <i class="fa-solid fa-circle-notch fa-spin text-3xl text-blue-500"></i>
-                    <p class="text-xs text-slate-500">菜單圖片載入中...</p>
+            <div id="dragContainer" class="flex-grow overflow-auto no-scrollbar p-2 md:p-4 bg-amber-50 relative cursor-grab select-none flex items-start justify-center">
+                <div id="imageLoader" class="absolute inset-0 flex flex-col justify-center items-center bg-amber-50 space-y-2 z-10">
+                    <i class="fa-solid fa-circle-notch fa-spin text-3xl text-rose-500"></i>
+                    <p class="text-xs font-bold text-slate-700">菜單圖片載入中...</p>
                 </div>
                 <img id="menuImage" src="https://drive.google.com/thumbnail?sz=w1000&id=1BVJimgGuLN1J5GYFeayJQOg-0fj816Ku" 
                      alt="TRDC 菜單" 
@@ -149,11 +165,11 @@
                      onload="handleImageLoaded()">
             </div>
             
-            <div class="p-3 md:p-4 border-t border-slate-100 bg-white flex space-x-3 select-none shrink-0">
-                <button onclick="closeMenu(false)" class="flex-1 py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl transition text-base">
+            <div class="p-3 md:p-4 border-t-4 border-slate-900 bg-white flex space-x-3 select-none shrink-0">
+                <button onclick="closeMenu(false)" class="flex-1 py-3 px-4 bg-slate-100 hover:bg-slate-200 pop-box-sm text-slate-900 font-black rounded-xl transition text-base cursor-pointer">
                     關閉
                 </button>
-                <button onclick="closeMenu(true)" class="flex-1 py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-xl transition shadow-lg shadow-blue-200 text-base">
+                <button onclick="closeMenu(true)" class="flex-1 py-3 px-4 bg-emerald-400 hover:bg-emerald-300 pop-box-sm text-slate-900 font-black rounded-xl transition text-base cursor-pointer">
                     去訂餐 🤤
                 </button>
             </div>
@@ -162,26 +178,26 @@
 
     <!-- 選擇日期彈窗 -->
     <div id="orderModal" class="fixed inset-x-0 bottom-0 top-[75px] bg-slate-900/60 backdrop-blur-sm z-[90] hidden justify-center items-end md:items-center p-4 transition-all duration-300 opacity-0">
-        <div class="bg-white w-full max-w-md md:max-w-lg rounded-t-3xl md:rounded-3xl shadow-2xl overflow-hidden transform translate-y-full md:translate-y-0 transition-transform duration-300 flex flex-col">
-            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <h3 class="font-bold text-slate-800 text-lg flex items-center">
-                    <i class="fa-solid fa-calendar-days text-emerald-500 mr-2"></i>選擇訂餐日期
+        <div class="bg-white w-full max-w-md md:max-w-lg pop-box rounded-t-3xl md:rounded-3xl overflow-hidden transform translate-y-full md:translate-y-0 transition-transform duration-300 flex flex-col">
+            <div class="px-6 py-4 border-b-4 border-slate-900 flex justify-between items-center bg-amber-200">
+                <h3 class="font-black text-slate-900 text-lg flex items-center">
+                    <i class="fa-solid fa-calendar-days text-emerald-600 mr-2"></i>選擇訂餐日期
                 </h3>
-                <button onclick="closeOrderModal()" class="text-slate-400 hover:text-slate-600 p-1">
-                    <i class="fa-solid fa-xmark text-xl text-slate-400"></i>
+                <button onclick="closeOrderModal()" class="text-slate-900 hover:text-rose-600 p-1 cursor-pointer">
+                    <i class="fa-solid fa-xmark text-xl font-black"></i>
                 </button>
             </div>
             <div class="p-6 bg-white space-y-4">
                 <div class="space-y-2">
-                    <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">請選擇您要訂餐的日期：</label>
-                    <input type="date" id="modalDateInput" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-base font-medium text-slate-800">
+                    <label class="text-xs font-black text-slate-700 uppercase tracking-wider">請選擇您要訂餐的日期：</label>
+                    <input type="date" id="modalDateInput" class="w-full p-4 bg-amber-50 border-2 border-slate-900 pop-box-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-base font-bold text-slate-900">
                 </div>
             </div>
-            <div class="p-5 border-t border-slate-100 bg-slate-50 flex space-x-3">
-                <button onclick="closeOrderModal()" class="flex-1 py-3 px-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 font-semibold rounded-xl transition">
+            <div class="p-5 border-t-4 border-slate-900 bg-amber-100 flex space-x-3">
+                <button onclick="closeOrderModal()" class="flex-1 py-3 px-4 bg-white border-2 border-slate-900 pop-box-sm hover:bg-slate-50 text-slate-900 font-black rounded-xl transition cursor-pointer">
                     取消
                 </button>
-                <button onclick="submitOrder()" class="flex-1 py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition shadow-lg shadow-blue-200 flex items-center justify-center space-x-2">
+                <button onclick="submitOrder()" class="flex-1 py-3 px-4 bg-cyan-400 hover:bg-cyan-300 border-2 border-slate-900 pop-box-sm text-slate-900 font-black rounded-xl transition flex items-center justify-center space-x-2 cursor-pointer">
                     <span>確認前往訂餐</span>
                     <i class="fa-solid fa-arrow-right text-sm"></i>
                 </button>
@@ -246,7 +262,7 @@
             targetIframe.src = url;
         }
 
-        // --- 3. 點擊返回按鈕 (Step 4) 邏輯 ---
+        // --- 3. 點擊返回按鈕邏輯 ---
         function backToMenu() {
             iframeContainer.classList.add('hidden');
             backBtn.classList.add('hidden');

@@ -1,1 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TRDC 訂餐工具 - 極光玻璃風</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        html, body { touch-action: manipulation; background: linear-gradient(135deg, #e0f2fe 0%, #f3e8ff 50%, #ffe4e6 100%); min-height: 100vh; color: #1e293b; }
+        .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.8); }
+        .glass-clock { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.2); }
+    </style>
+</head>
+<body class="flex flex-col justify-between min-h-screen font-sans overflow-x-hidden pt-[75px]">
 
+    <header class="glass-panel shadow-sm py-3 px-4 fixed top-0 left-0 right-0 h-[75px] z-[100] flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <button id="backBtn" onclick="backToMenu()" class="hidden mr-2 p-2 bg-white/60 hover:bg-white text-slate-700 rounded-xl transition">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="bg-gradient-to-tr from-violet-600 to-indigo-600 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md shadow-indigo-200 shrink-0">
+                <i class="fa-solid fa-utensils text-sm"></i>
+            </div>
+            <div>
+                <h1 class="text-base font-bold tracking-tight text-slate-800 whitespace-nowrap">TRDC 訂餐工具</h1>
+                <p class="text-[10px] text-slate-500 whitespace-nowrap">AURORA v4.2.1</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-2">
+            <div id="liveClock" class="font-mono text-sm md:text-base font-bold glass-clock text-emerald-400 px-3.5 py-1.5 rounded-2xl shadow-lg flex items-center space-x-1.5 tracking-wider">
+                <i class="fa-regular fa-clock text-xs text-rose-400"></i>
+                <span>00:00:00</span>
+            </div>
+        </div>
+    </header>
+
+    <main id="mainMenu" class="flex-grow flex items-center justify-center px-4 md:px-8 py-6">
+        <div id="loginPromptCard" class="w-full max-w-md glass-panel rounded-3xl p-8 text-center shadow-xl space-y-6">
+            <button onclick="openLoginIframe()" class="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 active:scale-98 text-white p-6 rounded-2xl shadow-lg shadow-indigo-200 transition duration-150 flex items-center justify-center space-x-3 cursor-pointer select-none">
+                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-lock-open text-white"></i>
+                </div>
+                <span class="text-2xl font-bold tracking-wider">預先登入</span>
+            </button>
+            <p class="text-sm font-semibold text-slate-500">請先完成身分驗證</p>
+        </div>
+    </main>
+</body>
+</html>

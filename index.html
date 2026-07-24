@@ -278,32 +278,24 @@
         }
 
         // --- 4. 菜單彈窗與縮放控制 ---
-        function openMenu() {
-            menuModal.classList.remove('hidden');
-            menuModal.classList.add('flex');
-            setTimeout(() => {
-                menuModal.classList.add('opacity-100');
-                menuModalContent.classList.remove('translate-y-full');
-            }, 10);
-        }
+function openMenu() {
+    menuModal.classList.remove('hidden');
+    menuModal.classList.add('flex');
 
-        function handleImageLoaded() {
-            imageLoader.classList.add('hidden');
-            menuImage.classList.remove('opacity-0');
-        }
+    // 每次開啟時，動態帶入時間戳記強制繞過快取，確保讀取該連結的最新內容
+    const baseUri = "https://drive.usercontent.google.com/download?id=1BVJimgGuLN1J5GYFeayJQOg-0fj816Ku";
+    const cacheBuster = `&_t=${new Date().getTime()}`;
+    
+    // 重置圖片狀態並賦予新連結
+    imageLoader.classList.remove('hidden');
+    menuImage.classList.add('opacity-0', 'pointer-events-none');
+    menuImage.src = baseUri + cacheBuster;
 
-        function closeMenu(goToOrder = false) {
-            if (menuImage) {
-                menuImage.classList.remove('zoom-expanded');
-            }
-            menuModal.classList.remove('opacity-100');
-            menuModalContent.classList.add('translate-y-full');
-            setTimeout(() => {
-                menuModal.classList.add('hidden');
-                menuModal.classList.remove('flex');
-                if (goToOrder) openOrderModal();
-            }, 300);
-        }
+    setTimeout(() => {
+        menuModal.classList.add('opacity-100');
+        menuModalContent.classList.remove('translate-y-full');
+    }, 10);
+}
 
         // --- 5. 滑鼠拖曳與點擊放大 ---
         let isMouseDown = false;

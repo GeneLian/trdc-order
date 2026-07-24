@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TRDC 訂餐工具 v4.3.1- 活力普普風</title>
+    <title>TRDC 訂餐工具 v4.2.1 - 活力普普風</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- FontAwesome 圖標 -->
@@ -55,7 +55,7 @@
             </div>
             <div>
                 <h1 class="text-base font-black tracking-tight text-slate-900 whitespace-nowrap">TRDC 訂餐工具</h1>
-                <p class="text-[10px] font-bold text-slate-700 whitespace-nowrap">網頁快捷版 v4.3.1</p>
+                <p class="text-[10px] font-bold text-slate-700 whitespace-nowrap">網頁快捷版 v4.2.1</p>
             </div>
         </div>
         
@@ -278,24 +278,32 @@
         }
 
         // --- 4. 菜單彈窗與縮放控制 ---
-function openMenu() {
-    menuModal.classList.remove('hidden');
-    menuModal.classList.add('flex');
+        function openMenu() {
+            menuModal.classList.remove('hidden');
+            menuModal.classList.add('flex');
+            setTimeout(() => {
+                menuModal.classList.add('opacity-100');
+                menuModalContent.classList.remove('translate-y-full');
+            }, 10);
+        }
 
-    // 每次開啟時，動態帶入時間戳記強制繞過快取，確保讀取該連結的最新內容
-    const baseUri = "https://drive.usercontent.google.com/download?id=1BVJimgGuLN1J5GYFeayJQOg-0fj816Ku";
-    const cacheBuster = `&_t=${new Date().getTime()}`;
-    
-    // 重置圖片狀態並賦予新連結
-    imageLoader.classList.remove('hidden');
-    menuImage.classList.add('opacity-0', 'pointer-events-none');
-    menuImage.src = baseUri + cacheBuster;
+        function handleImageLoaded() {
+            imageLoader.classList.add('hidden');
+            menuImage.classList.remove('opacity-0');
+        }
 
-    setTimeout(() => {
-        menuModal.classList.add('opacity-100');
-        menuModalContent.classList.remove('translate-y-full');
-    }, 10);
-}
+        function closeMenu(goToOrder = false) {
+            if (menuImage) {
+                menuImage.classList.remove('zoom-expanded');
+            }
+            menuModal.classList.remove('opacity-100');
+            menuModalContent.classList.add('translate-y-full');
+            setTimeout(() => {
+                menuModal.classList.add('hidden');
+                menuModal.classList.remove('flex');
+                if (goToOrder) openOrderModal();
+            }, 300);
+        }
 
         // --- 5. 滑鼠拖曳與點擊放大 ---
         let isMouseDown = false;

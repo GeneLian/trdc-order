@@ -2,117 +2,275 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TRDC 訂餐工具 - 賽博龐克風</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRDC 訂餐工具</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        html, body { touch-action: manipulation; background-color: #030712; color: #f3f4f6; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .zoom-expanded { max-height: none !important; max-width: none !important; width: 150% !important; transition: width 0.25s ease; }
-        .neon-glow { box-shadow: 0 0 15px rgba(34, 197, 94, 0.4), inset 0 0 10px rgba(34, 197, 94, 0.2); }
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #FFFDF5;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
-<body class="flex flex-col justify-between min-h-screen font-sans overflow-x-hidden pt-[75px]">
+<body class="min-h-screen flex flex-col justify-between text-slate-800 antialiased selection:bg-amber-200">
 
-    <header class="bg-slate-900/90 backdrop-blur-md shadow-lg border-b border-slate-800 py-3 px-4 fixed top-0 left-0 right-0 h-[75px] z-[100] flex items-center justify-between">
+    <!-- 頂部標頭列 -->
+    <header class="w-full bg-amber-300 border-b-4 border-amber-400 px-4 py-3 shadow-md flex justify-between items-center sticky top-0 z-40">
         <div class="flex items-center space-x-3">
-            <button id="backBtn" onclick="backToMenu()" class="hidden mr-2 p-2 bg-slate-800 hover:bg-slate-700 text-cyan-400 rounded-xl transition">
-                <i class="fa-solid fa-arrow-left"></i>
-            </button>
-            <div class="bg-gradient-to-tr from-cyan-500 to-blue-600 text-slate-950 font-black w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/30 shrink-0">
-                <i class="fa-solid fa-utensils text-sm"></i>
+            <div class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center text-white shadow-inner">
+                <i class="fa-solid fa-utensils text-xl"></i>
             </div>
             <div>
-                <h1 class="text-base font-bold tracking-tight text-cyan-300 whitespace-nowrap">TRDC 訂餐工具</h1>
-                <p class="text-[10px] text-cyan-500/70 whitespace-nowrap">CYBERPUNK v4.2.1</p>
+                <h1 class="font-black text-lg tracking-wider text-slate-900 leading-tight">TRDC 訂餐工具</h1>
+                <p class="text-xs font-bold text-amber-900 opacity-80">網頁快捷版 v4.3.3</p>
             </div>
         </div>
-        
-        <div class="flex items-center space-x-2">
-            <div id="liveClock" class="font-mono text-sm md:text-base font-bold bg-slate-950 text-green-400 px-3.5 py-1.5 rounded-2xl border border-green-500/50 neon-glow flex items-center space-x-1.5 tracking-wider">
-                <i class="fa-regular fa-clock text-xs text-red-400 animate-pulse"></i>
-                <span>00:00:00</span>
-            </div>
+        <!-- 即時時鐘（點擊 6 下解鎖彩蛋） -->
+        <div id="liveClock" onclick="handleClockTap()" class="bg-white/80 hover:bg-white px-3 py-1.5 rounded-full border border-amber-400 shadow-sm flex items-center space-x-2 cursor-pointer transition select-none">
+            <i class="fa-regular fa-clock text-amber-600 animate-pulse"></i>
+            <span class="font-mono font-bold text-sm text-slate-700">11:35:29</span>
         </div>
     </header>
 
-    <main id="mainMenu" class="flex-grow flex items-center justify-center px-4 md:px-8 py-6">
-        <div id="loginPromptCard" class="w-full max-w-md bg-slate-900/80 border border-slate-800 rounded-3xl p-8 text-center shadow-2xl space-y-6 backdrop-blur-md">
-            <button onclick="openLoginIframe()" class="w-full group bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 active:scale-98 text-slate-950 font-black p-6 rounded-2xl shadow-lg shadow-cyan-500/20 transition duration-150 flex items-center justify-center space-x-3 cursor-pointer select-none">
-                <div class="w-12 h-12 bg-slate-950/20 rounded-xl flex items-center justify-center text-xl">
-                    <i class="fa-solid fa-lock-open text-slate-950"></i>
+    <!-- 主內容區 -->
+    <main class="w-full max-w-4xl mx-auto px-4 py-6 flex-1 flex flex-col justify-center space-y-4">
+        
+        <!-- 選項 1: 看一下菜單 (帶防快取與強制清除機制) -->
+        <div onclick="openMenuModal()" class="group bg-white border-3 border-slate-900 rounded-2xl p-5 shadow-[4px_4px_0px_#0f172a] hover:shadow-[6px_6px_0px_#0f172a] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[2px_2px_0px_#0f172a] transition-all duration-200 cursor-pointer flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="w-14 h-14 bg-amber-100 border-2 border-slate-900 rounded-xl flex items-center justify-center text-amber-600 text-2xl shadow-sm group-hover:bg-amber-200 transition">
+                    <i class="fa-solid fa-file-lines"></i>
                 </div>
-                <span class="text-2xl tracking-wider">預先登入</span>
-            </button>
-            <p class="text-sm font-semibold text-slate-400">請先完成身分驗證</p>
+                <div>
+                    <h2 class="font-black text-lg sm:text-xl text-slate-900 flex items-center gap-2">
+                        1. 看一下菜單 <span class="text-xl">🧐</span>
+                    </h2>
+                    <p class="text-xs sm:text-sm font-medium text-slate-500 mt-0.5">查看本周最新菜單圖片（防快取強制重載）</p>
+                </div>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-slate-900 group-hover:text-white transition">
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
         </div>
 
-        <div id="menuOptionsContainer" class="w-full max-w-md md:max-w-4xl space-y-6 hidden">
-            <button onclick="openMenu()" class="w-full flex items-center justify-between p-6 md:p-8 bg-slate-900/80 border border-slate-800 rounded-3xl shadow-lg hover:border-cyan-500/50 active:scale-98 transition duration-150 text-left">
-                <div class="flex items-center space-x-6">
-                    <div class="w-16 h-16 md:w-20 md:h-20 bg-slate-950 border border-cyan-500/30 rounded-2xl flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-file-lines text-2xl md:text-3xl text-cyan-400"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-100 text-lg md:text-xl">1. 看一下菜單 🤔</h3>
-                        <p class="text-xs md:text-base font-semibold text-slate-400 mt-1">查看本周最新菜單圖片</p>
-                    </div>
+        <!-- 選項 2: 直接訂餐 -->
+        <div onclick="openOrderModal()" class="group bg-white border-3 border-slate-900 rounded-2xl p-5 shadow-[4px_4px_0px_#0f172a] hover:shadow-[6px_6px_0px_#0f172a] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[2px_2px_0px_#0f172a] transition-all duration-200 cursor-pointer flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="w-14 h-14 bg-emerald-100 border-2 border-slate-900 rounded-xl flex items-center justify-center text-emerald-600 text-2xl shadow-sm group-hover:bg-emerald-200 transition">
+                    <i class="fa-solid fa-calendar-check"></i>
                 </div>
-                <i class="fa-solid fa-chevron-right text-cyan-500 text-base md:text-lg pr-2"></i>
-            </button>
-
-            <button onclick="openOrderModal()" class="w-full flex items-center justify-between p-6 md:p-8 bg-slate-900/80 border border-slate-800 rounded-3xl shadow-lg hover:border-emerald-500/50 active:scale-98 transition duration-150 text-left">
-                <div class="flex items-center space-x-6">
-                    <div class="w-16 h-16 md:w-20 md:h-20 bg-slate-950 border border-emerald-500/30 rounded-2xl flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-calendar-check text-2xl md:text-3xl text-emerald-400"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-100 text-lg md:text-xl">2. 直接訂餐 🤤</h3>
-                        <p class="text-xs md:text-base font-semibold text-slate-400 mt-1">選擇日期並開啟訂餐系統</p>
-                    </div>
+                <div>
+                    <h2 class="font-black text-lg sm:text-xl text-slate-900 flex items-center gap-2">
+                        2. 直接訂餐 <span class="text-xl">🥳</span>
+                    </h2>
+                    <p class="text-xs sm:text-sm font-medium text-slate-500 mt-0.5">選擇日期並開啟訂餐系統</p>
                 </div>
-                <i class="fa-solid fa-chevron-right text-emerald-500 text-base md:text-lg pr-2"></i>
-            </button>
-
-            <button onclick="loadIframe('https://app.inventec.com/iServicePWA/DaxiOrderMeal.html?rid=A0001')" class="w-full flex items-center justify-between p-6 md:p-8 bg-slate-900/80 border border-slate-800 rounded-3xl shadow-lg hover:border-blue-500/50 active:scale-98 transition duration-150 text-left">
-                <div class="flex items-center space-x-6">
-                    <div class="w-16 h-16 md:w-20 md:h-20 bg-slate-950 border border-blue-500/30 rounded-2xl flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-qrcode text-2xl md:text-3xl text-blue-400"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-100 text-lg md:text-xl">3. 看訂餐結果 & QRCode</h3>
-                        <p class="text-xs md:text-base font-semibold text-slate-400 mt-1">查詢紀錄並出示取餐碼</p>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-right text-blue-500 text-base md:text-lg pr-2"></i>
-            </button>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-slate-900 group-hover:text-white transition">
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
         </div>
+
+        <!-- 選項 3: 看訂餐結果 & QRCode -->
+        <div onclick="openResultModal()" class="group bg-white border-3 border-slate-900 rounded-2xl p-5 shadow-[4px_4px_0px_#0f172a] hover:shadow-[6px_6px_0px_#0f172a] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[2px_2px_0px_#0f172a] transition-all duration-200 cursor-pointer flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="w-14 h-14 bg-blue-100 border-2 border-slate-900 rounded-xl flex items-center justify-center text-blue-600 text-2xl shadow-sm group-hover:bg-blue-200 transition">
+                    <i class="fa-solid fa-qrcode"></i>
+                </div>
+                <div>
+                    <h2 class="font-black text-lg sm:text-xl text-slate-900 flex items-center gap-2">
+                        3. 看訂餐結果 & QRCode
+                    </h2>
+                    <p class="text-xs sm:text-sm font-medium text-slate-500 mt-0.5">查詢紀錄並出示取餐碼</p>
+                </div>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-slate-900 group-hover:text-white transition">
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+
+        <!-- 選項 4: 隱藏版實境搶餐彩蛋 (預設隱藏，點擊時鐘 6 下後顯示) -->
+        <div id="hiddenBotOption" onclick="openBotConfigModal()" class="hidden group bg-gradient-to-r from-purple-50 to-indigo-50 border-3 border-indigo-600 rounded-2xl p-5 shadow-[4px_4px_0px_#4f46e5] hover:shadow-[6px_6px_0px_#4f46e5] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[2px_2px_0px_#4f46e5] transition-all duration-200 cursor-pointer flex items-center justify-between animate-bounce">
+            <div class="flex items-center space-x-4">
+                <div class="w-14 h-14 bg-indigo-500 border-2 border-indigo-700 rounded-xl flex items-center justify-center text-white text-2xl shadow-sm">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div>
+                    <h2 class="font-black text-lg sm:text-xl text-indigo-900 flex items-center gap-2">
+                        4. 實境搶餐機器人設定 <span class="text-xl">🤖</span>
+                    </h2>
+                    <p class="text-xs sm:text-sm font-bold text-indigo-700 mt-0.5">解鎖隱藏版：手動指定優先度自動秒殺</p>
+                </div>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-indigo-200 flex items-center justify-center text-indigo-800 group-hover:bg-indigo-600 group-hover:text-white transition">
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+
     </main>
 
-    <div id="iframeContainer" class="w-full flex-grow hidden bg-slate-950">
-        <iframe id="targetIframe" src="" class="w-full h-full border-none flex-grow" style="height: calc(100vh - 75px);"></iframe>
-    </div>
-
-    <footer id="mainFooter" class="py-4 text-center text-xs text-slate-500">
-        <p>CYBERPUNK SYSTEM ACTIVE - 請依規定的工作日天數選擇正確的日期</p>
+    <!-- 底部提示 -->
+    <footer class="w-full py-4 text-center text-xs font-bold text-slate-400 tracking-wider">
+        請依規定的工作日天數選擇正確的日期
     </footer>
 
-    <!-- 彈窗與JS邏輯與前面共用，此處省略重複結構以保持簡潔 -->
+    <!-- ==================== 彈窗區塊 (Modals) ==================== -->
+
+    <!-- 1. 菜單彈窗 (近乎全螢幕滿版) -->
+    <div id="menuModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 hidden">
+        <div class="bg-white border-3 border-slate-900 w-[96vw] h-[calc(100vh-40px)] rounded-3xl shadow-2xl flex flex-col overflow-hidden transform scale-95 transition-transform duration-300">
+            <div class="bg-amber-300 border-b-3 border-slate-900 px-6 py-4 flex justify-between items-center">
+                <h3 class="font-black text-lg text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-file-lines"></i> 本周菜單圖片 (已強制清除快取)
+                </h3>
+                <button onclick="closeMenuModal()" class="w-9 h-9 bg-white border-2 border-slate-900 rounded-xl flex items-center justify-center text-slate-900 hover:bg-slate-900 hover:text-white transition cursor-pointer font-bold">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="flex-1 bg-slate-50 relative overflow-auto p-4 flex items-center justify-center" id="menuContainer">
+                <div id="imageLoader" class="absolute flex flex-col items-center space-y-2 text-slate-500 font-bold z-10">
+                    <i class="fa-solid fa-spinner fa-spin text-3xl text-amber-500"></i>
+                    <p>正在強制清除舊快取，讀取最新菜單...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 直接訂餐日期選擇彈窗 -->
+    <div id="orderModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white border-3 border-slate-900 w-full max-w-md rounded-3xl shadow-2xl flex flex-col overflow-hidden transform scale-95 transition-transform duration-300">
+            <div class="bg-emerald-300 border-b-3 border-slate-900 px-6 py-4 flex justify-between items-center">
+                <h3 class="font-black text-lg text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-check"></i> 選擇訂餐日期
+                </h3>
+                <button onclick="closeOrderModal()" class="w-9 h-9 bg-white border-2 border-slate-900 rounded-xl flex items-center justify-center text-slate-900 hover:bg-slate-900 hover:text-white transition cursor-pointer font-bold">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <label class="block font-bold text-slate-700 text-sm">請選擇您想要預訂的日期：</label>
+                <input type="date" id="modalDateInput" class="w-full border-3 border-slate-900 rounded-xl px-4 py-3 font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <button onclick="submitOrderDate()" class="w-full bg-emerald-400 hover:bg-emerald-500 border-3 border-slate-900 text-slate-900 font-black py-3 rounded-xl shadow-[3px_3px_0px_#0f172a] active:translate-y-0.5 transition cursor-pointer">
+                    確認前往訂餐系統
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== JavaScript 邏輯控制區 ==================== -->
     <script>
+        // 即時時鐘
         function updateClock() {
             const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            const span = document.querySelector('#liveClock span');
-            if (span) span.textContent = `${hours}:${minutes}:${seconds}`;
+            const timeString = now.toTimeString().split(' ')[0];
+            document.querySelector('#liveClock span').textContent = timeString;
         }
         setInterval(updateClock, 1000);
-        window.addEventListener('DOMContentLoaded', updateClock);
-        function openLoginIframe() { alert('請接續您原本的登入頁面路由'); }
-        function backToMenu() { document.getElementById('iframeContainer').classList.add('hidden'); document.getElementById('mainMenu').classList.remove('hidden'); }
+        updateClock();
+
+        // 點擊時鐘 6 下解鎖隱藏彩蛋
+        let clockTapCount = 0;
+        let clockTapTimer = null;
+        function handleClockTap() {
+            clockTapCount++;
+            clearTimeout(clockTapTimer);
+            if (clockTapCount >= 6) {
+                const hiddenOption = document.getElementById('hiddenBotOption');
+                hiddenOption.classList.remove('hidden');
+                alert('🎉 恭喜解鎖隱藏版：實境搶餐機器人設定！');
+                clockTapCount = 0;
+            } else {
+                clockTapTimer = setTimeout(() => {
+                    clockTapCount = 0;
+                }, 1000);
+            }
+        }
+
+        // ==================== 1. 看一下菜單（防快取強制清除機制） ====================
+        function openMenuModal() {
+            const modal = document.getElementById('menuModal');
+            const container = document.getElementById('menuContainer');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.querySelector('.transform').classList.remove('scale-95'), 10);
+
+            // 強制清除快取與 Cookie 紀錄
+            try {
+                localStorage.removeItem('menu_cache');
+                sessionStorage.clear();
+                document.cookie.split(";").forEach(function(c) { 
+                    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+                });
+            } catch(e) {
+                console.log('Cache clear skipped', e);
+            }
+
+            // 動態加上毫秒級時間戳記，強制突破瀏覽器/CDN快取
+            const timestamp = new Date().getTime();
+            const targetMenuUrl = 'https://genelian.github.io/trdc-order/menu.html?t=' + timestamp; 
+            
+            container.innerHTML = `
+                <div id="imageLoader" class="absolute flex flex-col items-center space-y-2 text-slate-500 font-bold z-10">
+                    <i class="fa-solid fa-spinner fa-spin text-3xl text-amber-500"></i>
+                    <p>正在強制清除舊快取，讀取最新菜單...</p>
+                </div>
+                <iframe src="${targetMenuUrl}" class="w-full h-full border-0 rounded-2xl relative z-20" onload="document.getElementById('imageLoader').style.display='none';"></iframe>
+            `;
+        }
+
+        function closeMenuModal() {
+            const modal = document.getElementById('menuModal');
+            modal.querySelector('.transform').classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 200);
+        }
+
+        // ==================== 2. 直接訂餐 ====================
+        function openOrderModal() {
+            const modal = document.getElementById('orderModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.querySelector('.transform').classList.remove('scale-95'), 10);
+            
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('modalDateInput').value = today;
+        }
+
+        function closeOrderModal() {
+            const modal = document.getElementById('orderModal');
+            modal.querySelector('.transform').classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 200);
+        }
+
+        function submitOrderDate() {
+            const dateVal = document.getElementById('modalDateInput').value;
+            if(!dateVal) {
+                alert('請先選擇日期！');
+                return;
+            }
+            const targetUrl = `https://iservice.corp.com/order?date=${dateVal}`;
+            window.open(targetUrl, '_blank');
+            closeOrderModal();
+        }
+
+        // ==================== 3. 看訂餐結果 & QRCode ====================
+        function openResultModal() {
+            window.open('https://iservice.corp.com/result', '_blank');
+        }
+
+        // ==================== 4. 隱藏版機器人設定 ====================
+        function openBotConfigModal() {
+            alert('機器人優先度設定介面即將開啟，請在官方頁面進行劃位設定！');
+        }
     </script>
 </body>
 </html>
